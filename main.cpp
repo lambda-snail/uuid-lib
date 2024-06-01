@@ -21,7 +21,8 @@ int main()
     auto g2 = LambdaSnail::guid();
     auto g3 = uuid<uuid_variant_v4<xoroshiro128pp>>();
 
-    //guid e = guid::empty_guid;
+    auto nil = LambdaSnail::nil_uuid;
+    auto max = LambdaSnail::max_uuid;
 
     // auto a = reinterpret_cast<uint8_t*>(&g1);
     // auto b = reinterpret_cast<uint8_t*>(&g2);

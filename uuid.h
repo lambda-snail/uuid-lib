@@ -14,6 +14,12 @@ namespace LambdaSnail
 
     static inline std::unique_ptr<xoroshiro128pp> default_generator = std::make_unique<xoroshiro128pp>();
 
+    template<uint8_t constant>
+    struct uuid_variant_constant
+    {
+        static void init_fields(std::array<uint8_t, 16>& octets);
+    };
+
     template<typename rng_t = xoroshiro128pp>
     struct uuid_variant_v4
     {
@@ -31,15 +37,12 @@ namespace LambdaSnail
     class uuid
     {
     public:
-        uuid();
+        inline uuid();
 
         explicit uuid(std::array<uint8_t, 16> const& bytes);
 
         template<typename rng_t = xoroshiro128pp>
         explicit uuid(rng_t& random_generator);
-
-        static uuid const nil_uuid;
-        static uuid const max_uuid;
 
     private:
 
@@ -65,6 +68,18 @@ namespace LambdaSnail
         octets[variant_octet] &= 0b10111111;
     }
 
+    template<uint8_t constant>
+    void uuid_variant_constant<constant>::init_fields(std::array<uint8_t, 16>& octets)
+    {
+        octets.fill(constant);
+    }
+
+    template<typename rng_t>
+    void uuid_variant_v7<rng_t>::init_fields(std::array<uint8_t, 16> &octets, rng_t random_generator)
+    {
+
+    }
+
     template<typename uuid_variant = uuid_variant_v4>
     template<typename rng_t>
     uuid<uuid_variant>::uuid(rng_t& random_generator)
@@ -72,8 +87,20 @@ namespace LambdaSnail
         uuid_variant::init_fields(octets, random_generator);
     }
 
+    template<>
+    inline uuid<uuid_variant_constant<0>>::uuid()
+    {
+        uuid_variant_constant<0>::init_fields(octets);
+    }
+
+    template<>
+    inline uuid<uuid_variant_constant<0xFF>>::uuid()
+    {
+        uuid_variant_constant<0xFF>::init_fields(octets);
+    }
+
     template<typename uuid_variant = uuid_variant_v4>
-    uuid<uuid_variant>::uuid()
+    inline uuid<uuid_variant>::uuid()
     {
         uuid_variant::init_fields(octets, *default_generator);
     }
@@ -84,4 +111,7 @@ namespace LambdaSnail
 
     using guid_v7   = uuid<uuid_variant_v7<xoroshiro128pp>>;
     using uuid_v7   = uuid<uuid_variant_v7<xoroshiro128pp>>;
+
+    static inline uuid<uuid_variant_constant<0>> const nil_uuid{};
+    static inline uuid<uuid_variant_constant<0xFF>> const max_uuid{};
 }

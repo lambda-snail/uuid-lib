@@ -2,26 +2,26 @@
 
 #include "xoroshiro128.h"
 
-static xoroshiro128pp default_prng = {};
-
-uuid const uuid::nil_uuid = uuid({ 0 });
-uuid const uuid::max_uuid = uuid({ 0xFF });
-
-void uuid_variant_v4::init_fields(std::array<uint8_t, 16> &octets) const
+namespace LambdaSnail
 {
+    //std::unique_ptr<xoroshiro128pp> default_generator = std::make_unique<xoroshiro128pp>();
 
-}
+    template<typename uuid_variant>
+    uuid<uuid_variant> const uuid<uuid_variant>::nil_uuid = uuid({ 0 });
 
-uuid::uuid() : uuid(default_prng) { }
+    template<typename uuid_variant>
+    uuid<uuid_variant> const uuid<uuid_variant>::max_uuid = uuid({ 0xFF });
 
-uuid::uuid(std::array<uint8_t, 16> const &bytes)
-{
-    octets = bytes;
-    set_fixed_fields(*this);
-}
+    template<typename rng_t>
+    void uuid_variant_v7<rng_t>::init_fields(std::array<uint8_t, 16> &octets, rng_t random_generator)
+    {
 
-auto uuid::set_fixed_fields(uuid &g) -> void
-{
-    g.octets[version_octet] &= 0b01001111;
-    g.octets[variant_octet] &= 0b10111111;
-}
+    }
+
+    template<typename uuid_variant>
+    uuid<uuid_variant>::uuid(std::array<uint8_t, 16> const &bytes)
+    {
+        octets = bytes;
+        set_fixed_fields(*this);
+    }
+};

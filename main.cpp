@@ -15,14 +15,16 @@ int main()
     // long_jump();
     // next();
 
-    uuid g1;
-    uuid g2;
-    uuid g3;
+    using namespace LambdaSnail;
+
+    // uuid g1 = uuid();
+    auto g2 = LambdaSnail::guid();
+    auto g3 = uuid<uuid_variant_v4<xoroshiro128pp>>();
 
     //guid e = guid::empty_guid;
 
-    auto a = reinterpret_cast<uint8_t*>(&g1);
-    auto b = reinterpret_cast<uint8_t*>(&g2);
+    // auto a = reinterpret_cast<uint8_t*>(&g1);
+    // auto b = reinterpret_cast<uint8_t*>(&g2);
 
     //std::cout << &g1 - &g2 << std::endl;
 

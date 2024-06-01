@@ -36,6 +36,31 @@ namespace LambdaSnail
     };
 
 
+    /**
+     * Represents a subset of a universally unique identifier (UUID) as specified in rfc9562.
+     *
+     * Currently only uuid version 4 is implemented. The standard also defines two special uuid's called 'nil' and 'max'.
+     * They are implemented as a special type of variant.
+     *
+     * The uuid class holds the octet data, and different versions can be implemented using the strategy patern by specifying
+     * a variant class as a template type parameter. The variant classes are responsible for initializing the octets of the uuid,
+     * and it is possible to extend the system to uuid versions that are not implemented if needed. Since there is no way to
+     * check arbitrary code for standards compliance, this means that users of the library can effectivel define any kind
+     * of uuid that they want - this corresponds to version 8 in the standard.
+     *
+     * A variant definition must implement a function with the signature
+     *
+     * static void init_fields(std::array<uint8_t, 16>&, rng_t)
+     *
+     * where rng_t is a template type parameter that will also be passed to the ctor of the uuid. It can be used to specify
+     * implementation specific random number generators if the defaul one that comes with the library is not sufficient for
+     * whatever reason. The default random number generator is called xoroshiro128pp and will be used by default.
+     *
+     * @link https://datatracker.ietf.org/doc/html/rfc9562#name-requirements-language
+     *
+     * The random number generator has been adapted from:
+     * @link https://xoroshiro.di.unimi.it/xoroshiro128plusplus.c
+     */
     template<typename uuid_variant = uuid_variant_v4>
     class uuid
     {

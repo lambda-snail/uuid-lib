@@ -4,21 +4,21 @@
 
 Represents a subset of a universally unique identifier (UUID) as specified in [rfc9562](https://datatracker.ietf.org/doc/html/rfc9562#name-requirements-language).
 
-This is mostly intended for educational purposes, as I see many people who seem o confuse Uuids (or Guids) for a particular framework
+This is mostly intended for educational purposes, as I see many people who seem to confuse UUIDs (or GUIDs) for a particular framework
 with the general concept of a Uuid as specified in the standard.
 
-If your favorite language or framework doesn't provide Uuids with a particular property, you can always implement our own (or use a third part library)!
+If your favorite language or framework doesn't provide UUID with a particular property, you can always implement our own (or use a third part library)!
 
 ## Details
 
-Currently only uuid version 4 is implemented. The standard also defines two special uuid's called 'nil' and 'max'.
+Currently only UUID version 4 is implemented. The standard also defines two special uuid's called 'nil' and 'max'.
 They are implemented as a special type of variant.
 
-The uuid class holds the octet data, and different versions can be implemented using the strategy patern by specifying
+The UUID class holds the octet data, and different versions can be implemented using the strategy pattern by specifying
 a variant class as a template type parameter. The variant classes are responsible for initializing the octets of the uuid,
 and it is possible to extend the system to uuid versions that are not implemented if needed. Since there is no way to
-check arbitrary code for standards compliance, this means that users of the library can effectivel define any kind
-of uuid that they want - this corresponds to version 8 in the standard.
+check arbitrary code for standards compliance, this means that users of the library can effectively define any kind
+of uuid that they want - this may correspond to version 8 in the standard.
 
 A variant definition must implement a function with the signature
 
@@ -36,9 +36,9 @@ struct uuid_variant_v4
 };
 ```
 
-where rng_t is a template type parameter that will also be passed to the ctor of the uuid. It can be used to specify
-implementation specific random number generators if the defaul one that comes with the library is not sufficient for
-whatever reason. The default random number generator is called xoroshiro128pp and will be used by default.
+where `rng_t` is a template type parameter that will also be passed to the `ctor` of the UUID. It can be used to specify
+implementation specific random number generators if the default one that comes with the library is not sufficient for
+whatever reason. The default random number generator is called `xoroshiro128pp`.
 
 ## Links
 

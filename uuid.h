@@ -37,24 +37,34 @@ namespace LambdaSnail
 
 
     /**
-     * Represents a subset of a universally unique identifier (UUID) as specified in rfc9562.
-     *
-     * Currently only uuid version 4 is implemented. The standard also defines two special uuid's called 'nil' and 'max'.
-     * They are implemented as a special type of variant.
-     *
-     * The uuid class holds the octet data, and different versions can be implemented using the strategy patern by specifying
-     * a variant class as a template type parameter. The variant classes are responsible for initializing the octets of the uuid,
-     * and it is possible to extend the system to uuid versions that are not implemented if needed. Since there is no way to
-     * check arbitrary code for standards compliance, this means that users of the library can effectivel define any kind
-     * of uuid that they want - this corresponds to version 8 in the standard.
-     *
-     * A variant definition must implement a function with the signature
-     *
-     * static void init_fields(std::array<uint8_t, 16>&, rng_t)
-     *
-     * where rng_t is a template type parameter that will also be passed to the ctor of the uuid. It can be used to specify
-     * implementation specific random number generators if the defaul one that comes with the library is not sufficient for
-     * whatever reason. The default random number generator is called xoroshiro128pp and will be used by default.
+    * Currently only UUID version 4 is implemented. The standard also defines two special uuid's called 'nil' and 'max'.
+    * They are implemented as a special type of variant.
+    *
+    * The UUID class holds the octet data, and different versions can be implemented using the strategy pattern by specifying
+    * a variant class as a template type parameter. The variant classes are responsible for initializing the octets of the uuid,
+    * and it is possible to extend the system to uuid versions that are not implemented if needed. Since there is no way to
+    * check arbitrary code for standards compliance, this means that users of the library can effectively define any kind
+    * of uuid that they want - this may correspond to version 8 in the standard.
+    *
+    * A variant definition must implement a function with the signature
+    *
+    * ```c++
+    * static void init_fields(std::array<uint8_t, 16>&, rng_t)
+    * ```
+    *
+    * For instance the definition for the uuid version 4 variant looks like this:
+    *
+    * ```c++
+    * template<typename rng_t = xoroshiro128pp>
+    * struct uuid_variant_v4
+    * {
+    *     static void init_fields(std::array<uint8_t, 16>& octets, rng_t random_generator);
+    * };
+    * ```
+    *
+    * where `rng_t` is a template type parameter that will also be passed to the `ctor` of the UUID. It can be used to specify
+    * implementation specific random number generators if the default one that comes with the library is not sufficient for
+    * whatever reason. The default random number generator is called `xoroshiro128pp`.
      *
      * @link https://datatracker.ietf.org/doc/html/rfc9562#name-requirements-language
      *
@@ -65,13 +75,29 @@ namespace LambdaSnail
     class uuid
     {
     public:
+        /**
+         * Creates a version 4 UUID using the default random number generator.
+         */
         inline uuid();
 
+        /**
+         * Creates a UUID using the provided sequence of bytes. This will initialize the UUID with a copy of the
+         * byte array, and it is up to the caller to make sure that the resulting UUID is compliant with the standard.
+         * This can be useful in certain scenarios where the UUID has already been created, possibly by an external source,
+         * such as deserialization.
+         */
         explicit uuid(std::array<uint8_t, 16> const& bytes);
 
+        /**
+         * Creates a UUID from a user-provided random number generator. Useful if you need random numbers from a particular
+         * source or that fulfill certain criteria.
+         */
         template<typename rng_t = xoroshiro128pp>
         explicit uuid(rng_t& random_generator);
 
+        /**
+         * Returns a string representation of the UUID.
+         */
         [[nodiscard]] std::string as_string() const;
 
     private:

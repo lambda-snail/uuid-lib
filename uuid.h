@@ -3,7 +3,10 @@
 #include <array>
 #include <cstdint>
 #include <cstring>
+#include <format>
+#include <string>
 #include <memory>
+#include <string>
 
 #include "xoroshiro128.h"
 
@@ -44,10 +47,25 @@ namespace LambdaSnail
         template<typename rng_t = xoroshiro128pp>
         explicit uuid(rng_t& random_generator);
 
+        [[nodiscard]] std::string as_string() const;
+
     private:
 
         std::array<uint8_t, 16> octets {};
     };
+
+    template<typename uuid_variant>
+    std::string uuid<uuid_variant>::as_string() const
+    {
+        return std::format(
+            "{:02x}{:02x}{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}",
+            octets[0], octets[1], octets[2], octets[3],
+            octets[4], octets[5],
+            octets[6], octets[7],
+            octets[8], octets[9],
+            octets[10], octets[11], octets[12], octets[13], octets[14], octets[15]
+        );
+    }
 
     template<typename rng_t = xoroshiro128pp>
     void uuid_variant_v4<rng_t>::init_fields(std::array<uint8_t, 16>& octets, rng_t random_generator)

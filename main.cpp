@@ -27,7 +27,10 @@ int main()
     // auto a = reinterpret_cast<uint8_t*>(&g1);
     // auto b = reinterpret_cast<uint8_t*>(&g2);
 
-    //std::cout << &g1 - &g2 << std::endl;
+    std::cout << g2.as_string() << std::endl;
+    std::cout << g3.as_string() << std::endl;
+    std::cout << nil.as_string() << std::endl;
+    std::cout << max.as_string() << std::endl;
 
     // TODO: empty guid is not empty anymore ...
 }

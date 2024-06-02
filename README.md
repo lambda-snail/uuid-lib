@@ -11,8 +11,9 @@ If your favorite language or framework doesn't provide UUID with a particular pr
 
 ## Details
 
-Currently only UUID version 4 is implemented. The standard also defines two special uuid's called 'nil' and 'max'.
- These are provided as static variables, accessible as e.g. `uuid::max`.
+Currently, this library implements UUID version 4 and 7. Version 7 UUIDs do not implement sub-millisecond monotonicity guarantees
+that would be required for batch creation - I am currently thinking about this. The standard also defines two special uuid's called
+'nil' and 'max'. These are provided as static variables, accessible as e.g. `uuid::max`.
 
  The UUID class really only holds octet data. Different versions of UUID are implemented using the strategy pattern,
  by passing a version spec class to the constructor. The spec classes are responsible for initializing the octets

@@ -9,7 +9,7 @@ namespace LambdaSnail::Uuid
         m_octets.fill(constant);
     }
 
-    consteval uuid::uuid(std::array<uint8_t, 16> const &bytes)
+    consteval uuid::uuid(octet_set_t const &bytes)
     {
         m_octets = bytes;
     }

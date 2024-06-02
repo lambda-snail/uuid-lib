@@ -19,7 +19,7 @@ auto xoroshiro128pp::seed_state(std::array<uint64_t, 2> const &&state) -> void
 
 auto xoroshiro128pp::is_seeded() const -> bool
 {
-    return s[0] && s[1];
+    return s[0] || s[1];
 }
 
 auto xoroshiro128pp::next() -> uint64_t

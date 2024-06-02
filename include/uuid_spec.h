@@ -4,6 +4,7 @@
 #include <chrono>
 
 #include "xoroshiro128.h"
+#include "uuid_types.h"
 
 namespace LambdaSnail::Uuid::spec
 {
@@ -13,20 +14,20 @@ namespace LambdaSnail::Uuid::spec
     template<typename rng_t>
     struct uuid_v4_spec
     {
-        void init_fields(std::array<uint8_t, 16>& octets, rng_t random_generator) const;
+        void init_fields(octet_set_t& octets, rng_t random_generator) const;
     };
 
     template<typename rng_t>
     struct uuid_v7_spec
     {
-        void init_fields(std::array<uint8_t, 16>& octets, rng_t random_generator) const;
+        void init_fields(octet_set_t& octets, rng_t random_generator) const;
     };
 
     inline static constexpr uuid_v4_spec<xoroshiro128pp> g_uuid_v4_spec = {};
     inline static constexpr uuid_v7_spec<xoroshiro128pp> g_uuid_v7_spec = {};
 
     template<typename rng_t = xoroshiro128pp>
-    void uuid_v4_spec<rng_t>::init_fields(std::array<uint8_t, 16>& octets, rng_t random_generator) const
+    void uuid_v4_spec<rng_t>::init_fields(octet_set_t& octets, rng_t random_generator) const
     {
         if(not random_generator.is_seeded())
         {
@@ -45,7 +46,7 @@ namespace LambdaSnail::Uuid::spec
     }
 
     template<typename rng_t>
-    void uuid_v7_spec<rng_t>::init_fields(std::array<uint8_t, 16> &octets, rng_t random_generator) const
+    void uuid_v7_spec<rng_t>::init_fields(octet_set_t& octets, rng_t random_generator) const
     {
         // Set timestampt bits
         std::chrono::time_point<std::chrono::system_clock> const now = std::chrono::system_clock::now();

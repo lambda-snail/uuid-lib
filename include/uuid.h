@@ -6,6 +6,7 @@
 #include <string>
 #include <memory>
 #include <string>
+#include <uuid_types.h>
 
 #include "xoroshiro128.h"
 
@@ -69,7 +70,7 @@ namespace LambdaSnail::Uuid
          * This can be useful in certain scenarios where the UUID has already been created, possibly by an external source,
          * such as deserialization.
          */
-        explicit uuid(std::array<uint8_t, 16> const& bytes);
+        explicit uuid(octet_set_t const& bytes);
 
         /**
          * Creates a UUID from a user-provided random number generator. Useful if you need random numbers from a particular
@@ -101,7 +102,7 @@ namespace LambdaSnail::Uuid
         static const uuid max;
 
     private:
-        std::array<uint8_t, 16> m_octets {};
+        octet_set_t m_octets {};
     };
 
     template<typename uuid_spec, typename rng_t>

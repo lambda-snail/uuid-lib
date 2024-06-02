@@ -83,9 +83,9 @@ Instead of `octet_set_t` you can also use the actual type, `std::array<uint8_t, 
 
 # TODO
 
--[ ] Add tests
--[ ] Remove the main file so that the code can be included as a library
--[ ] Add batch creation capabilities for UUID v7
+- [ ] Add tests
+- [ ] Remove the main file so that the code can be included as a library
+- [ ] Add batch creation capabilities for UUID v7
 
 ## Links
 

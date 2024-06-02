@@ -4,7 +4,10 @@
 
 namespace LambdaSnail::Uuid
 {
-    consteval uuid::uuid(uint8_t constant)
+    uuid const uuid::nil = uuid( 0x00 );
+    uuid const uuid::max = uuid( 0xFF );
+
+    uuid::uuid(uint8_t constant)
     {
         m_octets.fill(constant);
     }

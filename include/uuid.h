@@ -67,7 +67,7 @@ namespace LambdaSnail::Uuid
          * This can be useful in certain scenarios where the UUID has already been created, possibly by an external source,
          * such as deserialization.
          */
-        explicit consteval uuid(octet_set_t const& bytes);
+        explicit constexpr uuid(octet_set_t const& bytes);
 
         /**
          * Creates a UUID from a user-provided random number generator. Useful if you need random numbers from a particular

@@ -2,7 +2,7 @@
 
 #include "xoroshiro128.h"
 
-namespace LambdaSnail
+namespace LambdaSnail::Uuid
 {
     uuid::uuid(uint8_t constant)
     {

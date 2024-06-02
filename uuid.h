@@ -17,24 +17,20 @@ namespace LambdaSnail
 
     static inline std::unique_ptr<xoroshiro128pp> default_generator = std::make_unique<xoroshiro128pp>();
 
-    template<uint8_t constant>
-    struct uuid_variant_constant
+    template<typename rng_t>
+    struct uuid_v4_spec
     {
-        static void init_fields(std::array<uint8_t, 16>& octets);
+        void init_fields(std::array<uint8_t, 16>& octets, rng_t random_generator) const;
     };
 
-    template<typename rng_t = xoroshiro128pp>
-    struct uuid_variant_v4
+    template<typename rng_t>
+    struct uuid_v7_spec
     {
-        static void init_fields(std::array<uint8_t, 16>& octets, rng_t random_generator);
+        void init_fields(std::array<uint8_t, 16>& octets, rng_t random_generator) const;
     };
 
-    template<typename rng_t = xoroshiro128pp>
-    struct uuid_variant_v7
-    {
-        static void init_fields(std::array<uint8_t, 16>& octets, rng_t random_generator);
-    };
-
+    inline static constexpr uuid_v4_spec<xoroshiro128pp> g_uuid_v4_spec = {};
+    inline static constexpr uuid_v7_spec<xoroshiro128pp> g_uuid_v7_spec = {};
 
     /**
     * Currently only UUID version 4 is implemented. The standard also defines two special uuid's called 'nil' and 'max'.
@@ -71,14 +67,16 @@ namespace LambdaSnail
      * The random number generator has been adapted from:
      * @link https://xoroshiro.di.unimi.it/xoroshiro128plusplus.c
      */
-    template<typename uuid_variant = uuid_variant_v4>
     class uuid
     {
     public:
+        explicit uuid(uint8_t constant);
+
         /**
          * Creates a version 4 UUID using the default random number generator.
          */
-        inline uuid();
+        template<typename uuid_spec>
+        explicit inline uuid(uuid_spec const& spec) requires (not std::is_integral_v<uuid_spec>);
 
         /**
          * Creates a UUID using the provided sequence of bytes. This will initialize the UUID with a copy of the
@@ -92,34 +90,23 @@ namespace LambdaSnail
          * Creates a UUID from a user-provided random number generator. Useful if you need random numbers from a particular
          * source or that fulfill certain criteria.
          */
-        template<typename rng_t = xoroshiro128pp>
-        explicit uuid(rng_t& random_generator);
+        template<typename uuid_spec, typename rng_t = xoroshiro128pp>
+        explicit uuid(uuid_spec const& spec, rng_t& random_generator);
 
         /**
          * Returns a string representation of the UUID.
          */
         [[nodiscard]] std::string as_string() const;
 
-    private:
+        static const uuid nil;
+        static const uuid max;
 
+    private:
         std::array<uint8_t, 16> octets {};
     };
 
-    template<typename uuid_variant>
-    std::string uuid<uuid_variant>::as_string() const
-    {
-        return std::format(
-            "{:02x}{:02x}{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}",
-            octets[0], octets[1], octets[2], octets[3],
-            octets[4], octets[5],
-            octets[6], octets[7],
-            octets[8], octets[9],
-            octets[10], octets[11], octets[12], octets[13], octets[14], octets[15]
-        );
-    }
-
     template<typename rng_t = xoroshiro128pp>
-    void uuid_variant_v4<rng_t>::init_fields(std::array<uint8_t, 16>& octets, rng_t random_generator)
+    void uuid_v4_spec<rng_t>::init_fields(std::array<uint8_t, 16>& octets, rng_t random_generator) const
     {
         if(not random_generator.is_seeded())
         {
@@ -137,50 +124,22 @@ namespace LambdaSnail
         octets[variant_octet] &= 0b10111111;
     }
 
-    template<uint8_t constant>
-    void uuid_variant_constant<constant>::init_fields(std::array<uint8_t, 16>& octets)
-    {
-        octets.fill(constant);
-    }
-
     template<typename rng_t>
-    void uuid_variant_v7<rng_t>::init_fields(std::array<uint8_t, 16> &octets, rng_t random_generator)
+    void uuid_v7_spec<rng_t>::init_fields(std::array<uint8_t, 16> &octets, rng_t random_generator) const
     {
 
     }
 
-    template<typename uuid_variant = uuid_variant_v4>
-    template<typename rng_t>
-    uuid<uuid_variant>::uuid(rng_t& random_generator)
+    template<typename uuid_spec, typename rng_t>
+    uuid::uuid(uuid_spec const& spec, rng_t& random_generator)
     {
-        uuid_variant::init_fields(octets, random_generator);
+        spec.init_fields(octets, random_generator);
     }
 
-    template<>
-    inline uuid<uuid_variant_constant<0>>::uuid()
+    template<typename uuid_spec>
+    inline uuid::uuid(uuid_spec const& spec) requires (not std::is_integral_v<uuid_spec>)
     {
-        uuid_variant_constant<0>::init_fields(octets);
+        static_assert(not std::is_integral_v<uuid_spec>);
+        spec.init_fields(octets, *default_generator);
     }
-
-    template<>
-    inline uuid<uuid_variant_constant<0xFF>>::uuid()
-    {
-        uuid_variant_constant<0xFF>::init_fields(octets);
-    }
-
-    template<typename uuid_variant = uuid_variant_v4>
-    inline uuid<uuid_variant>::uuid()
-    {
-        uuid_variant::init_fields(octets, *default_generator);
-    }
-
-    using guid      = uuid<uuid_variant_v4<xoroshiro128pp>>;
-    using guid_v4   = uuid<uuid_variant_v4<xoroshiro128pp>>;
-    using uuid_v4   = uuid<uuid_variant_v4<xoroshiro128pp>>;
-
-    using guid_v7   = uuid<uuid_variant_v7<xoroshiro128pp>>;
-    using uuid_v7   = uuid<uuid_variant_v7<xoroshiro128pp>>;
-
-    static inline uuid<uuid_variant_constant<0>> const nil_uuid{};
-    static inline uuid<uuid_variant_constant<0xFF>> const max_uuid{};
 }

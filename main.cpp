@@ -5,32 +5,13 @@
 
 int main()
 {
-    // using namespace std::chrono;
-    // time_point<system_clock> now = std::chrono::system_clock::now();
-    // uint64_t const time_stamp = now.time_since_epoch().count();
-
-    //std::cout << now.time_since_epoch().count() << std::endl;
-
-    // seed_state({ time_stamp, time_stamp });
-    // long_jump();
-    // next();
-
     using namespace LambdaSnail;
 
-    // uuid g1 = uuid();
-    auto g2 = LambdaSnail::guid();
-    auto g3 = uuid<uuid_variant_v4<xoroshiro128pp>>();
+    uuid uuid1 = uuid(g_uuid_v4_spec);
+    uuid uuid2 = uuid::nil;
+    uuid uuid3 = uuid::max;
 
-    auto nil = LambdaSnail::nil_uuid;
-    auto max = LambdaSnail::max_uuid;
-
-    // auto a = reinterpret_cast<uint8_t*>(&g1);
-    // auto b = reinterpret_cast<uint8_t*>(&g2);
-
-    std::cout << g2.as_string() << std::endl;
-    std::cout << g3.as_string() << std::endl;
-    std::cout << nil.as_string() << std::endl;
-    std::cout << max.as_string() << std::endl;
-
-    // TODO: empty guid is not empty anymore ...
+    std::cout << uuid1.as_string() << std::endl;
+    std::cout << uuid2.as_string() << std::endl;
+    std::cout << uuid3.as_string() << std::endl;
 }

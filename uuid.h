@@ -15,8 +15,6 @@ namespace LambdaSnail
     static inline constexpr size_t version_octet = 7;
     static inline constexpr size_t variant_octet = 9;
 
-    static inline std::unique_ptr<xoroshiro128pp> default_generator = std::make_unique<xoroshiro128pp>();
-
     template<typename rng_t>
     struct uuid_v4_spec
     {
@@ -33,32 +31,40 @@ namespace LambdaSnail
     inline static constexpr uuid_v7_spec<xoroshiro128pp> g_uuid_v7_spec = {};
 
     /**
+     * The default generator used by the UUID implementation.
+     */
+    static inline std::unique_ptr<xoroshiro128pp> g_default_generator = std::make_unique<xoroshiro128pp>();
+
+    /**
     * Currently only UUID version 4 is implemented. The standard also defines two special uuid's called 'nil' and 'max'.
-    * They are implemented as a special type of variant.
+    * These are provided as static variables, accessible as e.g. `uuid::max`.
     *
-    * The UUID class holds the octet data, and different versions can be implemented using the strategy pattern by specifying
-    * a variant class as a template type parameter. The variant classes are responsible for initializing the octets of the uuid,
-    * and it is possible to extend the system to uuid versions that are not implemented if needed. Since there is no way to
-    * check arbitrary code for standards compliance, this means that users of the library can effectively define any kind
-    * of uuid that they want - this may correspond to version 8 in the standard.
+    * The UUID class really only holds octet data. Different versions of UUID are implemented using the strategy pattern,
+    * by passing a version spec class to the constructor. The spec classes are responsible for initializing the octets
+    * of the uuid, and it is possible to extend the system to UUID versions not covered by this implementation if needed.
+    * Since there is no way to check arbitrary code for standards compliance, this means that users of the library can
+    * effectively define any kind of UUID that they want - this may or may not correspond to version 8 in the standard,
+    * depending on what you do.
     *
-    * A variant definition must implement a function with the signature
+    * A version spec must implement a function with the signature
     *
     * ```c++
-    * static void init_fields(std::array<uint8_t, 16>&, rng_t)
+    * void init_fields(std::array<uint8_t, 16>& octets, rng_t random_generator) const;
     * ```
     *
-    * For instance the definition for the uuid version 4 variant looks like this:
+    * The specs are not meant to have a state, so the init_fields function must be `const`. For instance the definition
+    * for the uuid version 4 spec looks like this:
     *
     * ```c++
-    * template<typename rng_t = xoroshiro128pp>
-    * struct uuid_variant_v4
+    * template<typename rng_t>
+    * struct uuid_v4_spec
     * {
-    *     static void init_fields(std::array<uint8_t, 16>& octets, rng_t random_generator);
+    *    void init_fields(std::array<uint8_t, 16>& octets, rng_t random_generator) const;
     * };
     * ```
     *
-    * where `rng_t` is a template type parameter that will also be passed to the `ctor` of the UUID. It can be used to specify
+    * where `rng_t` is the type of the random number generator that the spec expects. This will be passed to the spec instance
+    * from the `uuid` `ctor`, and may be the default one for `uuid` or a user-defined class. It can be used to specify
     * implementation specific random number generators if the default one that comes with the library is not sufficient for
     * whatever reason. The default random number generator is called `xoroshiro128pp`.
      *
@@ -70,10 +76,8 @@ namespace LambdaSnail
     class uuid
     {
     public:
-        explicit uuid(uint8_t constant);
-
         /**
-         * Creates a version 4 UUID using the default random number generator.
+         * Creates a UUID of the specified version using the default random number generator.
          */
         template<typename uuid_spec>
         explicit inline uuid(uuid_spec const& spec) requires (not std::is_integral_v<uuid_spec>);
@@ -94,15 +98,29 @@ namespace LambdaSnail
         explicit uuid(uuid_spec const& spec, rng_t& random_generator);
 
         /**
+         * Creates a UUID where all octets are filled with the same value.
+         * @warning This can be used to create non-standard compliant UUIDs. The standard only defines the UUIDs
+         * 'max' and 'nil'.
+         */
+        explicit uuid(uint8_t constant);
+
+        /**
          * Returns a string representation of the UUID.
          */
         [[nodiscard]] std::string as_string() const;
 
+        /**
+         * The empty or nil UUID, with all octets set to 0.
+         */
         static const uuid nil;
+
+        /**
+         * The max UUID, with all octets set to 0xFF.
+         */
         static const uuid max;
 
     private:
-        std::array<uint8_t, 16> octets {};
+        std::array<uint8_t, 16> m_octets {};
     };
 
     template<typename rng_t = xoroshiro128pp>
@@ -133,13 +151,13 @@ namespace LambdaSnail
     template<typename uuid_spec, typename rng_t>
     uuid::uuid(uuid_spec const& spec, rng_t& random_generator)
     {
-        spec.init_fields(octets, random_generator);
+        spec.init_fields(m_octets, random_generator);
     }
 
     template<typename uuid_spec>
     inline uuid::uuid(uuid_spec const& spec) requires (not std::is_integral_v<uuid_spec>)
     {
         static_assert(not std::is_integral_v<uuid_spec>);
-        spec.init_fields(octets, *default_generator);
+        spec.init_fields(m_octets, *g_default_generator);
     }
 }

@@ -6,12 +6,12 @@ namespace LambdaSnail
 {
     uuid::uuid(uint8_t constant)
     {
-        octets.fill(constant);
+        m_octets.fill(constant);
     }
 
     uuid::uuid(std::array<uint8_t, 16> const &bytes)
     {
-        octets = bytes;
+        m_octets = bytes;
     }
 
     uuid const uuid::nil = uuid(0);
@@ -21,11 +21,11 @@ namespace LambdaSnail
     {
         return std::format(
             "{:02x}{:02x}{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}",
-            octets[0], octets[1], octets[2], octets[3],
-            octets[4], octets[5],
-            octets[6], octets[7],
-            octets[8], octets[9],
-            octets[10], octets[11], octets[12], octets[13], octets[14], octets[15]
+            m_octets[0], m_octets[1], m_octets[2], m_octets[3],
+            m_octets[4], m_octets[5],
+            m_octets[6], m_octets[7],
+            m_octets[8], m_octets[9],
+            m_octets[10], m_octets[11], m_octets[12], m_octets[13], m_octets[14], m_octets[15]
         );
     }
 };

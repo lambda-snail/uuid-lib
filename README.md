@@ -11,18 +11,18 @@ If your favorite language or framework doesn't provide UUID with a particular pr
 
 ## Details
 
-Currently, this library implements UUID version 4 and 7. Version 7 UUIDs do not implement sub-millisecond monotonicity guarantees
-that would be required for batch creation - I am currently thinking about this. The standard also defines two special uuid's called
+Currently, this library implements UUID version 4 and 7. Version 7 UUIDs do not implement the sub-millisecond monotonicity guarantees
+that would be required for batch creation - I am currently thinking about this. The standard also defines two special UUIDs called
 'nil' and 'max'. These are provided as static variables, accessible as e.g. `uuid::max`.
 
- The UUID class really only holds octet data. Different versions of UUID are implemented using the strategy pattern,
- by passing a version spec class to the constructor. The spec classes are responsible for initializing the octets
- of the uuid, and it is possible to extend the system to UUID versions not covered by this implementation if needed.
- Since there is no way to check arbitrary code for standards compliance, this means that users of the library can
- effectively define any kind of UUID that they want - this may or may not correspond to version 8 in the standard,
- depending on what you do.
+The UUID class really only holds octet data. Different versions of UUID are implemented using the strategy pattern,
+by passing a version spec class to the constructor. The spec classes are responsible for initializing the octets
+of the uuid, and it is possible to extend the system to UUID versions not covered by this implementation if needed.
+Since there is no way to check arbitrary code for standards compliance, this means that users of the library can
+effectively define any kind of UUID that they want - this may or may not correspond to version 8 in the standard,
+depending on what you do.
 
- A version spec must implement a function with the signature
+A version spec must implement a function with the signature
 
 ```c++
 void init_fields(std::array<uint8_t, 16>& octets, rng_t random_generator) const;

@@ -1,13 +1,13 @@
 #include <iostream>
 
 #include "uuid.h"
-
+#include "uuid_spec.h"
 
 int main()
 {
-    using namespace LambdaSnail;
+    using namespace LambdaSnail::Uuid;
 
-    uuid uuid1 = uuid(g_uuid_v4_spec);
+    uuid uuid1 = uuid(spec::g_uuid_v4_spec);
     uuid uuid2 = uuid::nil;
     uuid uuid3 = uuid::max;
 

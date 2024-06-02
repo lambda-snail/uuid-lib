@@ -43,6 +43,19 @@ from the `uuid` `ctor`, and may be the default one for `uuid` or a user-defined 
 implementation specific random number generators if the default one that comes with the library is not sufficient for
 whatever reason. The default random number generator is called `xoroshiro128pp`.
 
+### Version 7 Details
+
+This project uses c++20, which allows us to create standard compliant UUID v7 using `std::chrono:::system_clock`. 
+From [cppreference](https://en.cppreference.com/w/cpp/chrono/system_clock):
+
+```
+system_clock measures Unix Time (i.e., time since 00:00:00 Coordinated Universal Time (UTC), Thursday, 1 January 1970, not counting leap seconds).
+```
+
+Prior to c++20 it was not required for `system_clock` to be based on Unit Time.
+
+
+
 ## Links
 
 The RFC that defines UUID (published May 2024).

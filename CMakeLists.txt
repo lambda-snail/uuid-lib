@@ -1,9 +1,14 @@
 cmake_minimum_required(VERSION 3.28)
-project(GuidDev)
+project(uuid-lib)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(GuidDev main.cpp
-        xoroshiro128.cpp xoroshiro128.h
-        uuid.h uuid.cpp
+set(SRC src)
+
+add_executable(uuid-lib main.cpp
+        ${SRC}/xoroshiro128.cpp
+        ${SRC}/uuid.cpp
+        ${SRC}/uuid_spec.cpp
 )
+
+target_include_directories(uuid-lib PUBLIC include)

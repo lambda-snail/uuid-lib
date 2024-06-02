@@ -34,7 +34,7 @@ for the uuid version 4 spec looks like this:
 template<typename rng_t>
 struct uuid_v4_spec
 {
-    void init_fields(std::array<uint8_t, 16>& octets, rng_t random_generator) const;
+    void init_fields(octet_set_t& octets, rng_t random_generator) const;
 };
 ```
 
@@ -54,7 +54,31 @@ system_clock measures Unix Time (i.e., time since 00:00:00 Coordinated Universal
 
 Prior to c++20 it was not required for `system_clock` to be based on Unit Time.
 
+# Usage
 
+To create a `uuid` we can call the ctor and specify a version spec. This library includes pre-defined specs for version 4 and 7
+that can be plugged in:
+
+```c++
+auto id_v4 = uuid(spec::g_uuid_v4_spec);
+auto id_v7 = uuid(spec::g_uuid_v7_spec);
+```
+
+There are also constants for the `nil` or _empty_ uuid, and the `max`:
+
+```c++
+auto max = uuid::max;
+auto empty = uuid::nil;
+```
+
+If you have obtained the octets for a UUID from somewhere else, a `uuid` can also be created with the raw data:
+
+```c++
+octet_set_t raw_data = get_data();
+auto raw_uuid = uuid(raw_data);
+```
+
+Instead of `octet_set_t` you can also use the actual type, `std::array<uint8_t, 16>`.
 
 ## Links
 

@@ -13,5 +13,5 @@ target_link_libraries(uuid-lib-benchmark
         PRIVATE
         benchmark::benchmark
         benchmark::benchmark_main
-        uuid-lib
+        LambdaSnail::uuid-lib
 )

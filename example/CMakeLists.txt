@@ -6,4 +6,4 @@ project(uuid-lib-example)
 
 add_executable(uuid-lib-example main.cpp)
 
-target_link_libraries(uuid-lib-example PUBLIC uuid-lib)
+target_link_libraries(uuid-lib-example PUBLIC LambdaSnail::uuid-lib)

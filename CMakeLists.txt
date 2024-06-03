@@ -22,4 +22,6 @@ add_library(uuid-lib
     ${SRC}/uuid_factory.cpp
 )
 
+add_library(LambdaSnail::uuid-lib ALIAS uuid-lib)
+
 target_include_directories(uuid-lib PUBLIC include)

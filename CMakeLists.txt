@@ -14,6 +14,7 @@ add_library(uuid-lib
     ${SRC}/xoroshiro128.cpp
     ${SRC}/uuid.cpp
     ${SRC}/uuid_spec.cpp
+    ${SRC}/uuid_factory.cpp
 )
 
 target_include_directories(uuid-lib PUBLIC include)

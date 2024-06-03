@@ -98,7 +98,7 @@ namespace LambdaSnail::Uuid
          */
         static const uuid max;
 
-    private:
+    //private:
         octet_set_t m_octets {};
     };
 

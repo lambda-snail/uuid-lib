@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "uuid.h"
+#include "uuid_factory.h"
 #include "uuid_spec.h"
 
 /**
@@ -36,4 +37,14 @@ int main()
     std::cout << v71.as_string() << std::endl;
     std::cout << v72.as_string() << std::endl;
     std::cout << v73.as_string() << std::endl;
+
+    std::cout << std::endl;
+
+    std::vector<uuid> uuids;
+    factory::create_uuids_fbdc(256, uuids);
+
+    for(uuid const& uuid: uuids)
+    {
+        std::cout << uuid.as_string() << std::endl;
+    }
 }

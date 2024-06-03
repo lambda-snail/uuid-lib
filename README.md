@@ -99,11 +99,11 @@ L3 Unified 16384 KiB (x1)
 
 | Benchmark                              | Time     | CPU      | Iterations |
 |----------------------------------------|----------|----------|------------|
-| BM_create_uuid_v4/iterations:1000000   | 228 ns   | 234 ns   | 1000000    |
+| BM_create_uuid_v4/iterations:1000000   | 229 ns   | 234 ns   | 1000000    |
 | BM_create_uuid_v7/iterations:1000000   | 64.8 ns  | 62.5 ns  | 1000000    |          
-| BM_create_batch/256/iterations:100000  | 2243 ns  | 2344 ns  | 100000     |          
-| BM_create_batch/1024/iterations:100000 | 8681 ns  | 8594 ns  | 100000     |          
-| BM_create_batch/4096/iterations:100000 | 35361 ns | 35469 ns | 100000     |          
+| BM_create_batch/256/iterations:100000  | 2070 ns  | 2188 ns  | 100000     |          
+| BM_create_batch/1024/iterations:100000 | 8024 ns  | 7969 ns  | 100000     |          
+| BM_create_batch/4096/iterations:100000 | 31854 ns | 31875 ns | 100000     |          
 
 ---
 

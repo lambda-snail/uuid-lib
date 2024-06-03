@@ -15,6 +15,10 @@ namespace LambdaSnail::Uuid::spec
     struct uuid_v4_spec
     {
         void init_fields(octet_set_t& octets, rng_t random_generator) const;
+
+    private:
+        static void set_version_bits(octet_set_t &octets);
+        static void set_variant_bits(octet_set_t &octets);
     };
 
     template<typename rng_t>
@@ -30,6 +34,30 @@ namespace LambdaSnail::Uuid::spec
     inline static constexpr uuid_v4_spec<xoroshiro128pp> g_uuid_v4_spec = {};
     inline static constexpr uuid_v7_spec<xoroshiro128pp> g_uuid_v7_spec = {};
 
+    template <typename rng_t>
+    void uuid_v4_spec<rng_t>::set_version_bits(octet_set_t &octets) {
+        // Most significant bits in version octet set to 0100
+        uint8_t constexpr b1 = ~(static_cast<uint8_t>(1) << 7);
+        uint8_t constexpr b2 = (static_cast<uint8_t>(1) << 6);
+        uint8_t constexpr b3 = ~(static_cast<uint8_t>(1) << 5);
+        uint8_t constexpr b4 = ~(static_cast<uint8_t>(1) << 4);
+
+        octets[version_octet] &= b1;
+        octets[version_octet] |= b2;
+        octets[version_octet] &= b3;
+        octets[version_octet] &= b4;
+    }
+
+    template <typename rng_t>
+    void uuid_v4_spec<rng_t>::set_variant_bits(octet_set_t &octets) {
+        // Most significant bits in variant octet set to 10
+        auto constexpr b1 = (static_cast<uint8_t>(1) << 7);
+        auto constexpr b2 = ~(static_cast<uint8_t>(1) << 6);
+
+        octets[variant_octet] |= b1;
+        octets[variant_octet] &= b2;
+    }
+
     template<typename rng_t = xoroshiro128pp>
     void uuid_v4_spec<rng_t>::init_fields(octet_set_t& octets, rng_t random_generator) const
     {
@@ -42,11 +70,16 @@ namespace LambdaSnail::Uuid::spec
         uint64_t const n1 = random_generator.next();
         uint64_t const n2 = random_generator.next();
 
+        // We don't care about endianness here, since a random integer is still a random integer even
+        // after shuffling the bytes around
         memcpy(octets.data(), &n1, sizeof(uint64_t));
         memcpy(octets.data() + octets.size()/2, &n2, sizeof(uint64_t));
 
         octets[version_octet] &= 0b01001111; // Most significant bits set to 0100
         octets[variant_octet] &= 0b10111111; // Most significant bits set to 10
+
+        set_version_bits(octets);
+        set_variant_bits(octets);
     }
 
     template<typename rng_t>

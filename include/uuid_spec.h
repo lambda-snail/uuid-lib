@@ -119,7 +119,7 @@ namespace LambdaSnail::Uuid::spec
     template<typename rng_t>
     void uuid_v7_spec<rng_t>::set_rand_a(octet_set_t &octets, uint16_t value) const
     {
-        // Most significant bits set to 0111
+        // Most significant bits in version octet set to 0111
         uint16_t constexpr b1 = ~(static_cast<uint16_t>(1) << 15);
         uint16_t constexpr b2 = (static_cast<uint16_t>(1) << 14);
         uint16_t constexpr b3 = (static_cast<uint16_t>(1) << 13);

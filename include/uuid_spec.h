@@ -86,10 +86,20 @@ namespace LambdaSnail::Uuid::spec
     template<typename rng_t>
     void uuid_v7_spec<rng_t>::set_rand_a(octet_set_t &octets, uint16_t value) const
     {
-        //octets[version_octet] &= 0b11110111; // Most significant bits set to 0111
-        value &= 0b0111111111111111; // Most significant bits set to 0111
+        // Most significant bits set to 0111
+        uint16_t constexpr b1 = ~(static_cast<uint16_t>(1) << 15);
+        uint16_t constexpr b2 = (static_cast<uint16_t>(1) << 14);
+        uint16_t constexpr b3 = (static_cast<uint16_t>(1) << 13);
+        uint16_t constexpr b4 = (static_cast<uint16_t>(1) << 12);
+
+        value &= b1;
+        value |= b2;
+        value |= b3;
+        value |= b4;
+
         memcpy(octets.data() + version_octet, &value, sizeof(uint16_t));
 
+        // If we are on little endian the most significant byte is in the 'wrong' place, so swap
         if constexpr (std::endian::native == std::endian::little)
         {
             std::swap(octets[version_octet], octets[version_octet+1]);
@@ -99,9 +109,12 @@ namespace LambdaSnail::Uuid::spec
     template<typename rng_t>
     void uuid_v7_spec<rng_t>::set_rand_b(octet_set_t &octets, uint64_t value) const
     {
-        //octets[variant_octet] &= 0b11111110; // Most significant bits set to 10
-        constexpr uint64_t variant_mask = ((std::numeric_limits<uint64_t>::max() << 62)-1);
-        value &= variant_mask; // Most significant bits set to 10
+        // Most significant bits set to 10
+        uint64_t constexpr b1 = (static_cast<uint64_t>(1) << 63);
+        uint64_t constexpr b2 = ~(static_cast<uint64_t>(1) << 62);
+
+        value |= b1;
+        value &= b2;
 
         memcpy(octets.data() + octets.size()/2, &value, sizeof(int64_t));
         if constexpr (std::endian::native == std::endian::little)

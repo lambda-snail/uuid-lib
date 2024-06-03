@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.28)
+project(uuid-lib-example)
+
+add_executable(uuid-lib-example main.cpp)
+
+target_link_libraries(uuid-lib-example PUBLIC uuid-lib)

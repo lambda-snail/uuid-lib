@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.28)
 
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_BUILD_TYPE Release)
+#set(CMAKE_BUILD_TYPE Release)
 
 find_package(benchmark REQUIRED)
 
-add_executable(uuid-lib-benchmark uuid_factory_b.cpp)
+add_executable(uuid-lib-benchmark uuid_bm.cpp)
 
 set_target_properties(uuid-lib-benchmark PROPERTIES LINKER_LANGUAGE CXX)
 

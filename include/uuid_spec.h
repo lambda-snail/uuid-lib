@@ -66,7 +66,6 @@ namespace LambdaSnail::Uuid::spec
             random_generator.seed_state();
         }
 
-        random_generator.long_jump();
         uint64_t const n1 = random_generator.next();
         uint64_t const n2 = random_generator.next();
 

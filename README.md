@@ -92,23 +92,23 @@ std::vector<uuid> uuids;
 factory::create_uuids_dedicated_counter(256, uuids);
 ```
 
-This creates `256` uuids based on the same time stamp and random data, which makes it more efficient per `uuid` compared 
-to creating `256` `uuid` objects using the constructor.
+This creates 256 uuids based on the same time stamp and random data, which makes it more efficient per `uuid` compared 
+to creating 256 `uuid` objects using the constructor.
 
-Care must be taken, however, as this function uses timestamps with millisecond precision, and even the maximum number of `4096` 
+Care must be taken, however, as this function uses timestamps with millisecond precision, and even the maximum number of 4096 
 may be created quicker than that (depending on the speed of your machine). Take a look at the provided benchmarks to get some 
 concrete numbers on your machine.
 
-If you need more than `4096` `uuid`s then there is also the monotonic counter:
+If you need more than 4096 `uuid`s then there is also the monotonic random method:
 
 ```c++
 std::vector<uuid> uuids;
 factory::create_uuids_monotonic_random(100000, 4, uuids);
 ```
 
-This will fill the vector with `100000` `uuid`s separated by an increment of `4`. These will use the same time stamp, and only
+This will fill the vector with 100,000 `uuid`s separated by an increment of 4. These will use the same time stamp, and only
 incur two calls per batch (not per `uuid`) to the random generator's `next()` function, so it will be more efficient per `uuid`
-than using the version-aware constructor `100000` times. New `uuid`s within the batch are created by adding the increment 
+than using the version-aware constructor 100000 times. New `uuid`s within the batch are created by adding the increment 
 to the previous `uuid`.
 
 

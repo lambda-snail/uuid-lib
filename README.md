@@ -5,15 +5,15 @@
 Represents a subset of a universally unique identifier (UUID) as specified in [rfc9562](https://datatracker.ietf.org/doc/html/rfc9562#name-requirements-language).
 
 This is mostly intended for educational purposes, as I see many people who seem to confuse UUIDs (or GUIDs) for a particular framework
-with the general concept of a Uuid as specified in the standard.
+with the general concept of a Uuid as specified in the standard - if your favorite language or framework doesn't provide UUID with a particular property, you can always implement our own (or use a third part library)!
 
-If your favorite language or framework doesn't provide UUID with a particular property, you can always implement our own (or use a third part library)!
+Currently, this library implements UUID version 4 and 7. The version 7 UUIDs can be generated in batch using a dedicated counter 
+of 12 bits (utilizing the `rand_a` section) or a monotonic counter (utilizing the least significant bits of the `rand_b` section). 
+The standard also defines two special UUIDs called 'nil' and 'max'. These are provided as static variables, accessible as e.g. `uuid::max`.
+
+
 
 ## Details
-
-Currently, this library implements UUID version 4 and 7. Version 7 UUIDs do not implement the sub-millisecond monotonicity guarantees
-that would be required for batch creation - I am currently thinking about this. The standard also defines two special UUIDs called
-'nil' and 'max'. These are provided as static variables, accessible as e.g. `uuid::max`.
 
 The UUID class really only holds octet data. Different versions of UUID are implemented using the strategy pattern,
 by passing a version spec class to the constructor. The spec classes are responsible for initializing the octets
@@ -57,6 +57,8 @@ Prior to c++20 it was not required for `system_clock` to be based on Unit Time.
 
 # Usage
 
+## Single UUID Creation
+
 To create a `uuid` we can call the ctor and specify a version spec. This library includes pre-defined specs for version 4 and 7
 that can be plugged in:
 
@@ -81,11 +83,42 @@ auto raw_uuid = uuid(raw_data);
 
 Instead of `octet_set_t` you can also use the actual type, `std::array<uint8_t, 16>`.
 
+## Batch UUID Creation
+
+If you need a small number of uuids (up to 4096), the dedicated counter function can be used:
+
+```c++
+std::vector<uuid> uuids;
+factory::create_uuids_dedicated_counter(256, uuids);
+```
+
+This creates `256` uuids based on the same time stamp and random data, which makes it more efficient per `uuid` compared 
+to creating `256` `uuid` objects using the constructor.
+
+Care must be taken, however, as this function uses timestamps with millisecond precision, and even the maximum number of `4096` 
+may be created quicker than that (depending on the speed of your machine). Take a look at the provided benchmarks to get some 
+concrete numbers on your machine.
+
+If you need more than `4096` `uuid`s then there is also the monotonic counter:
+
+```c++
+std::vector<uuid> uuids;
+factory::create_uuids_monotonic_random(100000, 4, uuids);
+```
+
+This will fill the vector with `100000` `uuid`s separated by an increment of `4`. These will use the same time stamp, and only
+incur two calls per batch (not per `uuid`) to the random generator's `next()` function, so it will be more efficient per `uuid`
+than using the version-aware constructor `100000` times. New `uuid`s within the batch are created by adding the increment 
+to the previous `uuid`.
+
+
 # TODO
 
 - [ ] Add tests
-- [ ] Remove the main file so that the code can be included as a library
-- [ ] Add batch creation capabilities for UUID v7
+- [ ] Add benchmarks
+- [x] Remove the main file so that the code can be included as a library
+- [x] Add batch creation capabilities for UUID v7
+- [ ] Random increment for the monotonic counter factory function
 
 ## Links
 

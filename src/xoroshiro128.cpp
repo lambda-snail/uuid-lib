@@ -5,10 +5,10 @@
 auto xoroshiro128pp::seed_state() -> void
 {
     using namespace std::chrono;
-    time_point<system_clock> const now = std::chrono::system_clock::now();
-    uint64_t const time_stamp = now.time_since_epoch().count();
+    uint64_t const s1 = system_clock::now().time_since_epoch().count();
+    uint64_t const s2 = system_clock::now().time_since_epoch().count();
 
-    seed_state({ time_stamp, time_stamp });
+    seed_state({ s1, s2 });
 }
 
 auto xoroshiro128pp::seed_state(std::array<uint64_t, 2> const &&state) -> void

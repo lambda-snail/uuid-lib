@@ -40,11 +40,25 @@ int main()
 
     std::cout << std::endl;
 
-    std::vector<uuid> uuids;
-    factory::create_uuids_fbdc(256, uuids);
+    // Batch generate UUIDs with fixed bit-length dedicated counter
 
-    for(uuid const& uuid: uuids)
-    {
-        std::cout << uuid.as_string() << std::endl;
-    }
-}
+    std::vector<uuid> uuids;
+    factory::create_uuids_dedicated_counter(256, uuids);
+
+    // for(uuid const& uuid: uuids)
+    // {
+    //     std::cout << uuid.as_string() << std::endl;
+    // }
+
+    std::cout << std::endl;
+
+    // Batch generate UUIDs with the monotonic random method
+
+    uuids.clear();
+    factory::create_uuids_monotonic_random(10000, 4, uuids);
+
+    // for(uuid const& uuid: uuids)
+    // {
+    //     std::cout << uuid.as_string() << std::endl;
+    // }
+;}

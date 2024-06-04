@@ -81,32 +81,6 @@ auto raw_uuid = uuid(raw_data);
 
 Instead of `octet_set_t` you can also use the actual type, `std::array<uint8_t, 16>`.
 
-# benchmarks
-
-Results of Google benchmark on my machine. Actual values will of course differ from machine to machine, but I think we can say that
-creating a uuid v7 is slightly faster than a v4, and creating them in batch is much faster per uuid compared to
-creating them individually.
-
----
-
-Run on (16 X 3294 MHz CPU s)
-CPU Caches:
-L1 Data 32 KiB (x8)
-L1 Instruction 32 KiB (x8)
-L2 Unified 512 KiB (x8)
-L3 Unified 16384 KiB (x1)
-
-
-| Benchmark                              | Time     | CPU      | Iterations |
-|----------------------------------------|----------|----------|------------|
-| BM_create_uuid_v4/iterations:1000000   | 229 ns   | 234 ns   | 1000000    |
-| BM_create_uuid_v7/iterations:1000000   | 64.8 ns  | 62.5 ns  | 1000000    |          
-| BM_create_batch/256/iterations:100000  | 2070 ns  | 2188 ns  | 100000     |          
-| BM_create_batch/1024/iterations:100000 | 8024 ns  | 7969 ns  | 100000     |          
-| BM_create_batch/4096/iterations:100000 | 31854 ns | 31875 ns | 100000     |          
-
----
-
 # TODO
 
 - [ ] Add tests

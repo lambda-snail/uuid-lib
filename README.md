@@ -135,11 +135,12 @@ to the previous `uuid`.
 
 # TODO
 
+- [ ] Remove the spec classes exposed to the user and switch to factory functions only for a more consistent API
+- [ ] Random increment for the monotonic counter factory function
 - [ ] Add tests
-- [ ] Add benchmarks
+- [x] Add benchmarks
 - [x] Remove the main file so that the code can be included as a library
 - [x] Add batch creation capabilities for UUID v7
-- [ ] Random increment for the monotonic counter factory function
 
 ## Links
 

@@ -11,7 +11,28 @@ Currently, this library implements UUID version 4 and 7. The version 7 UUIDs can
 of 12 bits (utilizing the `rand_a` section) or a monotonic counter (utilizing the least significant bits of the `rand_b` section). 
 The standard also defines two special UUIDs called 'nil' and 'max'. These are provided as static variables, accessible as e.g. `uuid::max`.
 
+## Use Case
 
+This is mainly intended for demonstration purposes, however it could potentially be used in an application where there is a need
+to create a large number of uuids that are unique to your application. Another case is if the UUIDs should not contain any references to MAC addresses, ethernet addresses 
+or any other information that may or may not be used by other UUID implementations - this library only uses the time stamp from `std::chrono` and the built-in
+random number generator (can also be overridden by the user).
+
+Please note that UUIDs should never be used for "security", in the sense of relying on the inability of a potential attacker to 
+guess the next id (see section 8 of the standard for a security related discussion).
+
+There are no guarantees of global uniqueness for the UUIDs generated here. If such guarantees are important, please take a look at the following functions 
+to see if they fit your needs better.
+
+### Linux
+
+- [uuid_generate](https://www.man7.org/linux/man-pages/man3/uuid_generate.3.html)
+
+### Windows
+
+- [CoCreateGuid](https://learn.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-cocreateguid)
+- [UuidCreate](https://learn.microsoft.com/en-us/windows/win32/api/rpcdce/nf-rpcdce-uuidcreate)
+- [UuidCreateSequential](https://learn.microsoft.com/en-us/windows/win32/api/rpcdce/nf-rpcdce-uuidcreatesequential)
 
 ## Details
 

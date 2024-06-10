@@ -89,6 +89,14 @@ namespace LambdaSnail::Uuid
         [[nodiscard]] std::string as_string() const;
 
         /**
+         * Some systems generate or expect UUIDs that are enclosed in braces. This function tries to
+         * facilitate interop with such systems.
+         *
+         * Returns a string with the same format as as_string, enclosed in braces: "{uuid}"
+         */
+        [[nodiscard]] std::string as_string_braced() const;
+
+        /**
          * The empty or nil UUID, with all octets set to 0.
          */
         static const uuid nil;

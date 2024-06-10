@@ -28,4 +28,16 @@ namespace LambdaSnail::Uuid
             m_octets[10], m_octets[11], m_octets[12], m_octets[13], m_octets[14], m_octets[15]
         );
     }
+
+    std::string uuid::as_string_braced() const
+    {
+        return std::format(
+            "{{{:02x}{:02x}{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}}}",
+            m_octets[0], m_octets[1], m_octets[2], m_octets[3],
+            m_octets[4], m_octets[5],
+            m_octets[6], m_octets[7],
+            m_octets[8], m_octets[9],
+            m_octets[10], m_octets[11], m_octets[12], m_octets[13], m_octets[14], m_octets[15]
+        );
+    }
 };

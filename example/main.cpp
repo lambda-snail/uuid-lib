@@ -26,6 +26,9 @@ int main()
     std::cout << empty.as_string() << std::endl;
     std::cout << max.as_string() << std::endl;
 
+    // The uuids can also be braced
+    std::cout << uuid1.as_string_braced() << std::endl;
+
     // We can also create uuid v7 with a built-in spec
     uuid v7 = uuid(spec::g_uuid_v7_spec);
     std::cout << v7.as_string() << std::endl;

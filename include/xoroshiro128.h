@@ -35,6 +35,7 @@ public:
 	 * Seeds the state with the current system time stamp.
 	 */
 	xoroshiro128pp();
+	xoroshiro128pp(xoroshiro128pp const& xoroshiro128_pp) = delete;
 
 	void seed_state(std::array<uint64_t, 2> const&& state);
 

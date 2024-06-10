@@ -14,7 +14,7 @@ namespace LambdaSnail::Uuid::spec
     template<typename rng_t>
     struct uuid_v4_spec
     {
-        void init_fields(octet_set_t& octets, rng_t random_generator) const;
+        void init_fields(octet_set_t& octets, rng_t& random_generator) const;
 
     private:
         static void set_version_bits(octet_set_t &octets);
@@ -24,7 +24,7 @@ namespace LambdaSnail::Uuid::spec
     template<typename rng_t>
     struct uuid_v7_spec
     {
-        void init_fields(octet_set_t& octets, rng_t random_generator) const;
+        void init_fields(octet_set_t& octets, rng_t& random_generator) const;
 
         void set_ts_ms(octet_set_t& octets, uint64_t raw_ts) const;
         void set_rand_a(octet_set_t& octets, uint16_t value) const;
@@ -59,7 +59,7 @@ namespace LambdaSnail::Uuid::spec
     }
 
     template<typename rng_t = xoroshiro128pp>
-    void uuid_v4_spec<rng_t>::init_fields(octet_set_t& octets, rng_t random_generator) const
+    void uuid_v4_spec<rng_t>::init_fields(octet_set_t& octets, rng_t& random_generator) const
     {
         uint64_t const n1 = random_generator.next();
         uint64_t const n2 = random_generator.next();
@@ -77,7 +77,7 @@ namespace LambdaSnail::Uuid::spec
     }
 
     template<typename rng_t>
-    void uuid_v7_spec<rng_t>::init_fields(octet_set_t& octets, rng_t random_generator) const
+    void uuid_v7_spec<rng_t>::init_fields(octet_set_t& octets, rng_t& random_generator) const
     {
         // Set timestampt bits
         std::chrono::time_point<std::chrono::system_clock> const now = std::chrono::system_clock::now();

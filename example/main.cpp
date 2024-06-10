@@ -27,38 +27,22 @@ int main()
     std::cout << max.as_string() << std::endl;
 
     // We can also create uuid v7 with a built-in spec
-    uuid v70 = uuid(spec::g_uuid_v7_spec);
-    uuid v71 = uuid(spec::g_uuid_v7_spec);
-    uuid v72 = uuid(spec::g_uuid_v7_spec);
-    uuid v73 = uuid(spec::g_uuid_v7_spec);
+    uuid v7 = uuid(spec::g_uuid_v7_spec);
+    std::cout << v7.as_string() << std::endl;
 
-    // These uuids should be consecutive
-    std::cout << v70.as_string() << std::endl;
-    std::cout << v71.as_string() << std::endl;
-    std::cout << v72.as_string() << std::endl;
-    std::cout << v73.as_string() << std::endl;
+    // However, if we create too many of the above uuids within a short period of time, we run into
+    // problems if they get essentially the same time stamp.
 
-    std::cout << std::endl;
-
-    // Batch generate UUIDs with fixed bit-length dedicated counter
+    // To solve this problem, we can batch generate UUIDs with a fixed bit-length dedicated counter.
+    // Using this method, up to 4096 uuids can be generated from the same timestamp.
 
     std::vector<uuid> uuids;
     factory::create_uuids_dedicated_counter(256, uuids);
 
-    // for(uuid const& uuid: uuids)
-    // {
-    //     std::cout << uuid.as_string() << std::endl;
-    // }
-
-    std::cout << std::endl;
-
-    // Batch generate UUIDs with the monotonic random method
+    // Another way to solve the problem is to batch generate UUIDs with the monotonic random method.
+    // This method sacrfices some of the randomness to allow up to 2^32 sequential uuids to be created
+    // with the same time stamp.
 
     uuids.clear();
     factory::create_uuids_monotonic_random(10000, 4, uuids);
-
-    // for(uuid const& uuid: uuids)
-    // {
-    //     std::cout << uuid.as_string() << std::endl;
-    // }
 ;}

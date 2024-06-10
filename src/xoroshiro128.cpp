@@ -2,7 +2,7 @@
 
 #include <chrono>
 
-auto xoroshiro128pp::seed_state() -> void
+xoroshiro128pp::xoroshiro128pp()
 {
     using namespace std::chrono;
     uint64_t const s1 = system_clock::now().time_since_epoch().count();
@@ -15,11 +15,6 @@ auto xoroshiro128pp::seed_state(std::array<uint64_t, 2> const &&state) -> void
 {
     s[0] = state[0];
     s[1] = state[1];
-}
-
-auto xoroshiro128pp::is_seeded() const -> bool
-{
-    return s[0] || s[1];
 }
 
 auto xoroshiro128pp::next() -> uint64_t

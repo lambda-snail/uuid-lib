@@ -34,11 +34,9 @@ public:
 	/*
 	 * Seeds the state with the current system time stamp.
 	 */
-	void seed_state();
-	void seed_state(std::array<uint64_t, 2> const&& state);
+	xoroshiro128pp();
 
-	[[nodiscard]]
-	auto is_seeded() const -> bool;
+	void seed_state(std::array<uint64_t, 2> const&& state);
 
 	auto next() -> uint64_t;
 

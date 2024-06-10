@@ -61,11 +61,6 @@ namespace LambdaSnail::Uuid::spec
     template<typename rng_t = xoroshiro128pp>
     void uuid_v4_spec<rng_t>::init_fields(octet_set_t& octets, rng_t random_generator) const
     {
-        if(not random_generator.is_seeded())
-        {
-            random_generator.seed_state();
-        }
-
         uint64_t const n1 = random_generator.next();
         uint64_t const n2 = random_generator.next();
 
@@ -89,11 +84,6 @@ namespace LambdaSnail::Uuid::spec
         int64_t const time_stamp = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
 
         set_ts_ms(octets, time_stamp);
-
-        if(not random_generator.is_seeded())
-        {
-            random_generator.seed_state();
-        }
 
         // Set random bits
         uint64_t const rand_a = random_generator.next();

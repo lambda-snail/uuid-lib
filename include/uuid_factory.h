@@ -35,11 +35,6 @@ namespace LambdaSnail::Uuid
             std::chrono::time_point<std::chrono::system_clock> const now = std::chrono::system_clock::now();
             int64_t const time_stamp = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
 
-            if(not random_generator.is_seeded())
-            {
-                random_generator.seed_state();
-            }
-
             for(int i = 0; i < num_uuids; ++i)
             {
                 uuid& uuid = out_vec.emplace_back(0);
@@ -77,11 +72,6 @@ namespace LambdaSnail::Uuid
             // One time stamp for all the uuids
             std::chrono::time_point<std::chrono::system_clock> const now = std::chrono::system_clock::now();
             int64_t const time_stamp = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
-
-            if(not random_generator.is_seeded())
-            {
-                random_generator.seed_state();
-            }
 
             // Attempt to create a random 16 bit number by adding the 'four' we get from next()
             uint64_t const rand_a_base = random_generator.next();

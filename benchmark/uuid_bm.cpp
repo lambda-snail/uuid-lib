@@ -3,6 +3,11 @@
 #include <uuid_factory.h>
 #include <benchmark/benchmark.h>
 
+#ifdef WIN32
+#include "combaseapi.h"
+#include "rpcdce.h"
+#endif
+
 using namespace LambdaSnail::Uuid;
 
 static void BM_create_batch_dedicated_counter(benchmark::State& state) {
@@ -42,16 +47,43 @@ static void BM_create_uuid_v7(benchmark::State& state) {
     }
 }
 
-BENCHMARK(BM_create_uuid_v4)->Iterations(1000000);
-BENCHMARK(BM_create_uuid_v7)->Iterations(1000000);
+#ifdef WIN32
 
-BENCHMARK(BM_create_batch_dedicated_counter)->Arg(256)->Iterations(100000);
-BENCHMARK(BM_create_batch_dedicated_counter)->Arg(1024)->Iterations(100000);
-BENCHMARK(BM_create_batch_dedicated_counter)->Arg(4096)->Iterations(100000);
+// Benchmark for comparison with Windows functions
+static void BM_WIN_cocreate_guid(benchmark::State& state) {
 
-BENCHMARK(BM_create_batch_monotonic_counter)->Arg(1024)->Iterations(100000);
-BENCHMARK(BM_create_batch_monotonic_counter)->Arg(4096)->Iterations(100000);
-BENCHMARK(BM_create_batch_monotonic_counter)->Arg(10000)->Iterations(100000);
-BENCHMARK(BM_create_batch_monotonic_counter)->Arg(100000)->Iterations(100000);
+    for (auto _ : state)
+    {
+        GUID id;
+        benchmark::DoNotOptimize( CoCreateGuid( &id ) );
+    }
+}
+
+static void BM_WIN_uuid_create_sequential(benchmark::State& state) {
+
+    for (auto _ : state)
+    {
+        GUID id;
+        benchmark::DoNotOptimize( UuidCreateSequential( &id ) );
+    }
+}
+
+#endif
+
+
+
+BENCHMARK(BM_create_uuid_v4);
+BENCHMARK(BM_create_uuid_v7);
+BENCHMARK(BM_WIN_cocreate_guid);
+BENCHMARK(BM_WIN_uuid_create_sequential);
+
+BENCHMARK(BM_create_batch_dedicated_counter)->Arg(256);
+BENCHMARK(BM_create_batch_dedicated_counter)->Arg(1024);
+BENCHMARK(BM_create_batch_dedicated_counter)->Arg(4096);
+
+BENCHMARK(BM_create_batch_monotonic_counter)->Arg(1024);
+BENCHMARK(BM_create_batch_monotonic_counter)->Arg(4096);
+BENCHMARK(BM_create_batch_monotonic_counter)->Arg(10000);
+BENCHMARK(BM_create_batch_monotonic_counter)->Arg(100000);
 
 BENCHMARK_MAIN();

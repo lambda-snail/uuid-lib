@@ -9,9 +9,14 @@ add_executable(uuid-lib-benchmark uuid_bm.cpp)
 
 set_target_properties(uuid-lib-benchmark PROPERTIES LINKER_LANGUAGE CXX)
 
+if(WIN32)
+    set(LAMBDASNAIL_EXTRA_LINK_ARGS "rpcrt4.lib")
+endif()
+
 target_link_libraries(uuid-lib-benchmark
         PRIVATE
         benchmark::benchmark
         benchmark::benchmark_main
         LambdaSnail::uuid-lib
+        ${LAMBDASNAIL_EXTRA_LINK_ARGS}
 )

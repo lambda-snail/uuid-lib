@@ -28,7 +28,8 @@ static void BM_create_uuid_v4(benchmark::State& state) {
 
     for (auto _ : state)
     {
-        uuid id(spec::g_uuid_v4_spec);
+        uuid id;
+        factory::create_uuid_v4(id);
     }
 }
 
@@ -36,7 +37,8 @@ static void BM_create_uuid_v7(benchmark::State& state) {
 
     for (auto _ : state)
     {
-        uuid id(spec::g_uuid_v7_spec);
+        uuid id;
+        factory::create_uuid_v7(id);
     }
 }
 

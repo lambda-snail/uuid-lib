@@ -56,10 +56,9 @@ namespace LambdaSnail::Uuid
     {
     public:
         /**
-         * Creates a UUID of the specified version using the default random number generator.
+         * Creates an empty uuid.
          */
-        template<typename uuid_spec>
-        explicit inline uuid(uuid_spec const& spec) requires (not std::is_integral_v<uuid_spec>);
+        explicit uuid();
 
         /**
          * Creates a UUID using the provided sequence of bytes. This will initialize the UUID with a copy of the
@@ -68,13 +67,6 @@ namespace LambdaSnail::Uuid
          * such as deserialization.
          */
         explicit constexpr uuid(octet_set_t const& bytes);
-
-        /**
-         * Creates a UUID from a user-provided random number generator. Useful if you need random numbers from a particular
-         * source or that fulfill certain criteria.
-         */
-        template<typename uuid_spec, typename rng_t = xoroshiro128pp>
-        explicit uuid(uuid_spec const& spec, rng_t& random_generator);
 
         /**
          * Creates a UUID where all octets are filled with the same value.
@@ -106,20 +98,6 @@ namespace LambdaSnail::Uuid
          */
         static const uuid max;
 
-    //private:
         octet_set_t m_octets {};
     };
-
-    template<typename uuid_spec, typename rng_t>
-    uuid::uuid(uuid_spec const& spec, rng_t& random_generator)
-    {
-        spec.init_fields(m_octets, random_generator);
-    }
-
-    template<typename uuid_spec>
-    inline uuid::uuid(uuid_spec const& spec) requires (not std::is_integral_v<uuid_spec>)
-    {
-        static_assert(not std::is_integral_v<uuid_spec>);
-        spec.init_fields(m_octets, *g_default_generator);
-    }
 }

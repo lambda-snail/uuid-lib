@@ -13,6 +13,52 @@ namespace LambdaSnail::Uuid
     namespace factory
     {
         /**
+         * Creates a single version four uuid based on the provided random number generator.
+         * @tparam rng_t The type of the random number generator. This needs to provide the member function `next()`.
+         * @param id The output uuid.
+         * @param random_generator The random number generator instance.
+         */
+        template<typename rng_t = xoroshiro128pp>
+        void create_uuid_v4(uuid& id, rng_t random_generator)
+        {
+            spec::uuid_v4_spec<rng_t> spec;
+            spec.init_fields(id.m_octets, random_generator);
+        }
+
+        /**
+         * Creates a single version four uuid using the default random generator.
+         */
+        template<typename rng_t = xoroshiro128pp>
+        void create_uuid_v4(uuid& id)
+        {
+            spec::uuid_v4_spec<rng_t> spec;
+            spec.init_fields(id.m_octets, *g_default_generator);
+        }
+
+        /**
+         * Creates a single version seven uuid based on the provided random number generator.
+         * @tparam rng_t The type of the random number generator. This needs to provide the member function `next()`.
+         * @param id The output uuid.
+         * @param random_generator The random number generator instance.
+         */
+        template<typename rng_t = xoroshiro128pp>
+        void create_uuid_v7(uuid& id, rng_t random_generator)
+        {
+            spec::uuid_v7_spec<rng_t> spec;
+            spec.init_fields(id.m_octets, random_generator);
+        }
+
+        /**
+         * Creates a single version seven uuid using the default random generator.
+         */
+        template<typename rng_t = xoroshiro128pp>
+        void create_uuid_v7(uuid& id)
+        {
+            spec::uuid_v7_spec<rng_t> spec;
+            spec.init_fields(id.m_octets, *g_default_generator);
+        }
+
+        /**
          * Creates a number of uuids using a fixed bit-length dedicated counter. Using this method, up to
          * 4096 UUIDs can be created with the same millisecond timestamp. This function is limited in that
          * it should only be called once per millisecond.

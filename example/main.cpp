@@ -12,7 +12,8 @@ int main()
     using namespace LambdaSnail::Uuid;
 
     // Create a uuid v4 with the built-in spec
-    uuid uuid1 = uuid(spec::g_uuid_v4_spec);
+    uuid uuid1;
+    factory::create_uuid_v4(uuid1);
 
     // uuid defines two constant UUIDs defined in the standard
     uuid empty = uuid::nil;
@@ -30,7 +31,9 @@ int main()
     std::cout << uuid1.as_string_braced() << std::endl;
 
     // We can also create uuid v7 with a built-in spec
-    uuid v7 = uuid(spec::g_uuid_v7_spec);
+    uuid v7;
+    factory::create_uuid_v7(v7);
+
     std::cout << v7.as_string() << std::endl;
 
     // However, if we create too many of the above uuids within a short period of time, we run into

@@ -15,7 +15,7 @@ namespace LambdaSnail::Uuid
     /**
      * The default generator used by the UUID implementation.
      */
-    static inline std::unique_ptr<xoroshiro128pp> g_default_generator = std::make_unique<xoroshiro128pp>();
+    static inline xoroshiro128pp g_default_generator;
 
     /**
      *  The UUID class really only holds octet data. Different versions of UUID are implemented using the strategy pattern,

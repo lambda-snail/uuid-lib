@@ -32,7 +32,7 @@ namespace LambdaSnail::Uuid
         void create_uuid_v4(uuid& id)
         {
             spec::uuid_v4_spec<rng_t> spec;
-            spec.init_fields(id.m_octets, *g_default_generator);
+            spec.init_fields(id.m_octets, g_default_generator);
         }
 
         /**
@@ -55,7 +55,7 @@ namespace LambdaSnail::Uuid
         void create_uuid_v7(uuid& id)
         {
             spec::uuid_v7_spec<rng_t> spec;
-            spec.init_fields(id.m_octets, *g_default_generator);
+            spec.init_fields(id.m_octets, g_default_generator);
         }
 
         /**
@@ -72,7 +72,7 @@ namespace LambdaSnail::Uuid
          * @param random_generator The instance of rng_t. Defaults to the global instance of the default generator bundled with the library.
          */
         template<typename rng_t = xoroshiro128pp>
-        void create_uuids_dedicated_counter(uint16_t num_uuids, std::vector<LambdaSnail::Uuid::uuid>& out_vec, rng_t& random_generator = *LambdaSnail::Uuid::g_default_generator)
+        void create_uuids_dedicated_counter(uint16_t num_uuids, std::vector<LambdaSnail::Uuid::uuid>& out_vec, rng_t& random_generator = LambdaSnail::Uuid::g_default_generator)
         {
             spec::uuid_v7_spec<rng_t> spec;
             out_vec.reserve(num_uuids);
@@ -110,7 +110,7 @@ namespace LambdaSnail::Uuid
          * @param random_generator The instance of rng_t. Defaults to the global instance of the default generator bundled with the library.
          */
         template<typename rng_t = xoroshiro128pp>
-        void create_uuids_monotonic_random(uint32_t num_uuids, uint32_t increment, std::vector<LambdaSnail::Uuid::uuid>& out_vec, rng_t& random_generator = *LambdaSnail::Uuid::g_default_generator)
+        void create_uuids_monotonic_random(uint32_t num_uuids, uint32_t increment, std::vector<LambdaSnail::Uuid::uuid>& out_vec, rng_t& random_generator = LambdaSnail::Uuid::g_default_generator)
         {
             spec::uuid_v7_spec<rng_t> spec;
             out_vec.reserve(num_uuids);

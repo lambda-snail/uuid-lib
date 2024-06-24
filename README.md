@@ -2,13 +2,14 @@
 
 ## Overview
 
-Represents a subset of a universally unique identifier (UUID) as specified in [rfc9562](https://datatracker.ietf.org/doc/html/rfc9562#name-requirements-language).
+Represents a subset of a universally unique identifier (UUID) as specified in the draft [rfc9562](https://datatracker.ietf.org/doc/html/rfc9562#name-requirements-language).
 
 This is mostly intended for educational purposes, as I see many people who seem to confuse UUIDs (or GUIDs) for a particular framework
-with the general concept of a Uuid as specified in the standard - if your favorite language or framework doesn't provide UUID with a particular property, you can always implement our own (or use a third part library)!
+with the general concept of a UUID as specified in the standard - if your favorite language or framework doesn't provide UUID with a particular property, you can always implement our own (or use a third part library)!
 
-Currently, this library implements UUID version 4 and 7. The version 7 UUIDs can be generated in batch using a dedicated counter 
+Currently, this library implements UUID version 4 and 7, based on the latest draft. The version 7 UUIDs can be generated in batch using a dedicated counter 
 of 12 bits (utilizing the `rand_a` section) or a monotonic counter (utilizing the least significant bits of the `rand_b` section). 
+
 The standard also defines two special UUIDs called 'nil' and 'max'. These are provided as static variables, accessible as e.g. `uuid::max`.
 
 ## Use Case
@@ -19,7 +20,7 @@ or any other information that may or may not be used by other UUID implementatio
 random number generator (can also be overridden by the user).
 
 Please note that UUIDs should never be used for "security", in the sense of relying on the inability of a potential attacker to 
-guess the next id (see section 8 of the standard for a security related discussion).
+guess the next id (see section 8 of the standard draft for a security related discussion).
 
 There are no guarantees of global uniqueness for the UUIDs generated here. If such guarantees are important, please take a look at the following functions 
 to see if they fit your needs better.
@@ -36,34 +37,13 @@ to see if they fit your needs better.
 
 ## Details
 
-The UUID class really only holds octet data. Different versions of UUID are implemented using the strategy pattern,
-by passing a version spec class to the constructor. The spec classes are responsible for initializing the octets
-of the uuid, and it is possible to extend the system to UUID versions not covered by this implementation if needed.
-Since there is no way to check arbitrary code for standards compliance, this means that users of the library can
-effectively define any kind of UUID that they want - this may or may not correspond to version 8 in the standard,
-depending on what you do.
+The UUID class really only holds octet data. Different versions of UUID are constructed using the provided factory functions.
+The "raw" octet data is exposed to the user, so it should be relatively straightforward to implement a new UUID version. Thus,
+this library puts a lot of responsibility on the user, should (s)he wish to make changes to a uuid or create their own.
 
-A version spec must implement a function with the signature
-
-```c++
-void init_fields(std::array<uint8_t, 16>& octets, rng_t random_generator) const;
-```
-
-The specs are not meant to have a state, so the init_fields function must be `const`. For instance the definition
-for the uuid version 4 spec looks like this:
-
-```c++
-template<typename rng_t>
-struct uuid_v4_spec
-{
-    void init_fields(octet_set_t& octets, rng_t random_generator) const;
-};
-```
-
-where `rng_t` is the type of the random number generator that the spec expects. This will be passed to the spec instance
-from the `uuid` `ctor`, and may be the default one for `uuid` or a user-defined class. It can be used to specify
-implementation specific random number generators if the default one that comes with the library is not sufficient for
-whatever reason. The default random number generator is called `xoroshiro128pp`.
+The library allows users to provide their own random number generator, but it also comes with an adapted version of a generator called `xoroshiro128pp`. 
+This generator is seeded with the system time by default when the application starts. A user-provided generator must support the
+a member function called `next()` that returns a `uint64_t`.
 
 ### Version 7 Details
 
@@ -74,7 +54,7 @@ From [cppreference](https://en.cppreference.com/w/cpp/chrono/system_clock):
 system_clock measures Unix Time (i.e., time since 00:00:00 Coordinated Universal Time (UTC), Thursday, 1 January 1970, not counting leap seconds).
 ```
 
-Prior to c++20 it was not required for `system_clock` to be based on Unit Time.
+Prior to c++20 it was not required for `system_clock` to be based on Unix Time.
 
 # Usage
 
@@ -84,8 +64,20 @@ To create a `uuid` we can call the ctor and specify a version spec. This library
 that can be plugged in:
 
 ```c++
-auto id_v4 = uuid(spec::g_uuid_v4_spec);
-auto id_v7 = uuid(spec::g_uuid_v7_spec);
+uuid v4;
+factory::create_uuid_v4(v4);
+uuid v7;
+factory::create_uuid_v7(v7);
+```
+
+This enables re-use of a single variable if you need more than one `uuid` within the same scope, but don't wish to "pollute" the stack:
+
+```c++
+uuid id;
+factory::create_uuid_v4(id);
+...
+factory::create_uuid_v7(id);
+...
 ```
 
 There are also constants for the `nil` or _empty_ uuid, and the `max`:
@@ -95,7 +87,7 @@ auto max = uuid::max;
 auto empty = uuid::nil;
 ```
 
-If you have obtained the octets for a UUID from somewhere else, a `uuid` can also be created with the raw data:
+If you have obtained the octets for a UUID from somewhere else (e.g., (de-)serialized from some stream), a `uuid` can also be created with the raw data:
 
 ```c++
 octet_set_t raw_data = get_data();
@@ -118,7 +110,7 @@ to creating 256 `uuid` objects using the constructor.
 
 Care must be taken, however, as this function uses timestamps with millisecond precision, and even the maximum number of 4096 
 may be created quicker than that (depending on the speed of your machine). Take a look at the provided benchmarks to get some 
-concrete numbers on your machine.
+concrete numbers for your system.
 
 If you need more than 4096 `uuid`s then there is also the monotonic random method:
 
@@ -128,16 +120,16 @@ factory::create_uuids_monotonic_random(100000, 4, uuids);
 ```
 
 This will fill the vector with 100,000 `uuid`s separated by an increment of 4. These will use the same time stamp, and only
-incur two calls per batch (not per `uuid`) to the random generator's `next()` function, so it will be more efficient per `uuid`
-than using the version-aware constructor 100000 times. New `uuid`s within the batch are created by adding the increment 
+incur two calls per batch (not per `uuid`) to the random generator's `next()` function. It is thus more efficient per `uuid`
+than using the provided factory functions repeatedly 100,000 times. New `uuid`s within the batch are created by adding the increment 
 to the previous `uuid`.
 
 
 # TODO
 
-- [ ] Remove the spec classes exposed to the user and switch to factory functions only for a more consistent API
 - [ ] Random increment for the monotonic counter factory function
 - [ ] Add tests
+- [x] Remove the spec classes exposed to the user and switch to factory functions only for a more consistent API
 - [x] Add benchmarks
 - [x] Remove the main file so that the code can be included as a library
 - [x] Add batch creation capabilities for UUID v7

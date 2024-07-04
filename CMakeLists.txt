@@ -6,11 +6,13 @@ set(CMAKE_CXX_STANDARD 20)
 set(UUID_LIB_BUILD_EXAMPLE 1)
 set(UUID_LIB_BUILD_BENCHMARK 1)
 
+add_subdirectory(test)
+
 #if(UUID_LIB_BUILD_EXAMPLE)
     add_subdirectory(example)
 #endif ()
 
-#if(UUID_LIB_BUILD_EXAMPLE)
+#if(UUID_LIB_BUILD_BENCHMARK)
     add_subdirectory(benchmark)
 #endif ()
 

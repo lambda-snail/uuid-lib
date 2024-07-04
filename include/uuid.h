@@ -30,8 +30,7 @@ namespace LambdaSnail::Uuid
      * The random number generator has been adapted from:
      * @link https://xoroshiro.di.unimi.it/xoroshiro128plusplus.c
      */
-    class uuid
-    {
+    class uuid {
     public:
         /**
          * Creates an empty uuid.
@@ -44,7 +43,7 @@ namespace LambdaSnail::Uuid
          * This can be useful in certain scenarios where the UUID has already been created, possibly by an external source,
          * such as deserialization.
          */
-        explicit constexpr uuid(octet_set_t const& bytes);
+        explicit constexpr uuid(octet_set_t const &bytes);
 
         /**
          * Creates a UUID where all octets are filled with the same value.
@@ -52,6 +51,9 @@ namespace LambdaSnail::Uuid
          * 'max' and 'nil'.
          */
         explicit uuid(uint8_t constant);
+
+        bool operator==(const uuid &) const;
+        bool operator<(const uuid &) const;
 
         /**
          * Returns a string representation of the UUID.
@@ -76,6 +78,7 @@ namespace LambdaSnail::Uuid
          */
         static const uuid max;
 
-        octet_set_t m_octets {};
+        alignas(16)
+        octet_set_t m_octets{};
     };
 }

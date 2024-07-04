@@ -51,4 +51,10 @@ int main()
 
     uuids.clear();
     factory::create_uuids_monotonic_random(10000, 4, uuids);
+
+    // UUIDs can also be compared
+
+    std::cout << "Equal:     " << (uuids[0] == uuids[1]) << std::endl;
+    std::cout << "Less than: " << (uuids[0] < uuids[1]) << std::endl;
+
 ;}

@@ -1,7 +1,7 @@
 #include "uuid.h"
 #include "xoroshiro128.h"
 
-#include <smmintrin.h>
+#include <immintrin.h>
 
 namespace LambdaSnail::Uuid
 {
@@ -25,11 +25,11 @@ namespace LambdaSnail::Uuid
         //
         // return true;
 
-        //_mm_lddqu_si128()
-        // 3.45 ns / 3.44 ns
          __m128i const this_id = _mm_load_si128(reinterpret_cast<__m128i const*>(m_octets.data()));
          __m128i const other_id = _mm_load_si128(reinterpret_cast<__m128i const*>(other.m_octets.data()));
-        return _mm_testc_si128( this_id, other_id ) == 0;
+
+        __m128i const tmp = _mm_cmpeq_epi8( this_id, other_id );
+        return _mm_test_all_ones(tmp);
 
         // 3.85 ns / 6.28 ns
         // return m_octets[0] == other.m_octets[0] and

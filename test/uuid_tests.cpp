@@ -15,3 +15,8 @@ TEST(UuidOperations, CopiedUuid_ShouldBeEqual)
     // Assert
     EXPECT_TRUE(a == b);
 }
+
+TEST(UuidOperations, NilAndMax_ShouldBeDifferent)
+{
+    EXPECT_FALSE(uuid::nil == uuid::max);
+}

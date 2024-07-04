@@ -58,7 +58,7 @@ namespace LambdaSnail::Uuid::spec
         octets[variant_octet] &= b2;
     }
 
-    template<typename rng_t = xoroshiro128pp>
+    template<typename rng_t>
     void uuid_v4_spec<rng_t>::init_fields(octet_set_t& octets, rng_t& random_generator) const
     {
         uint64_t const n1 = random_generator.next();

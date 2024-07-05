@@ -49,11 +49,12 @@ static void BM_create_uuid_v7(benchmark::State& state) {
 
 static void BM_EqualityComparison(benchmark::State& state)
 {
+    uuid id1, id2;
+    factory::create_uuid_v4(id1);
+    factory::create_uuid_v4(id2);
+
     for (auto _ : state)
     {
-        uuid id1, id2;
-        factory::create_uuid_v4(id1);
-        factory::create_uuid_v4(id2);
         benchmark::DoNotOptimize( id1 == id2 );
     }
 }
@@ -89,8 +90,7 @@ BENCHMARK(BM_create_uuid_v4);
 // BENCHMARK(BM_WIN_uuid_create_sequential);
 //
 
-BENCHMARK(BM_EqualityComparison)->Arg(false);
-BENCHMARK(BM_EqualityComparison)->Arg(true);
+BENCHMARK(BM_EqualityComparison);
 
 // BENCHMARK(BM_create_batch_dedicated_counter)->Arg(256);
 // BENCHMARK(BM_create_batch_dedicated_counter)->Arg(1024);

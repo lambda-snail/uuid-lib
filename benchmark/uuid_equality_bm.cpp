@@ -75,45 +75,43 @@ enum class cmp_test_case
 
 template <bool (*F)(uuid const& a, uuid const& b)>
 static void BM_cmp_eq(benchmark::State& state) {
+    uuid id1, id2;
+    factory::create_uuid_v4(id1);
+    id2 = id1;
+
     for (auto _ : state)
     {
-        uuid id1, id2;
-        factory::create_uuid_v4(id1);
-        id2 = id1;
-
-        auto start = std::chrono::high_resolution_clock::now();
-
+        // auto start = std::chrono::high_resolution_clock::now();
         benchmark::DoNotOptimize( F(id1, id2) );
+        // auto end = std::chrono::high_resolution_clock::now();
 
-        auto end = std::chrono::high_resolution_clock::now();
-        auto elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
-        state.SetIterationTime(elapsed_seconds.count());
+        // auto elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
+        // state.SetIterationTime(elapsed_seconds.count());
     }
 }
 
 template <bool (*F)(uuid const& a, uuid const& b)>
 static void BM_cmp_ne(benchmark::State& state) {
+    uuid id1, id2;
+    factory::create_uuid_v4(id1);
+    factory::create_uuid_v4(id2);
+
     for (auto _ : state)
     {
-        uuid id1, id2;
-        factory::create_uuid_v4(id1);
-        factory::create_uuid_v4(id2);
-
-        auto start = std::chrono::high_resolution_clock::now();
-
+        //auto start = std::chrono::high_resolution_clock::now();
         benchmark::DoNotOptimize( F(id1, id2) );
+        //auto end = std::chrono::high_resolution_clock::now();
 
-        auto end = std::chrono::high_resolution_clock::now();
-        auto elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
-        state.SetIterationTime(elapsed_seconds.count());
+        // auto elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
+        // state.SetIterationTime(elapsed_seconds.count());
     }
 }
 
-BENCHMARK_TEMPLATE(BM_cmp_eq, simple_loop)->Name("(==) Simple Loop");;
-BENCHMARK_TEMPLATE(BM_cmp_ne, simple_loop)->Name("(!=) Simple Loop");
-BENCHMARK_TEMPLATE(BM_cmp_eq, loop_unrolled)->Name("(==) Unrolled Loop");
-BENCHMARK_TEMPLATE(BM_cmp_ne, loop_unrolled)->Name("(!=) Unrolled Loop");
-BENCHMARK_TEMPLATE(BM_cmp_eq, loop_unrolled_xor)->Name("(==) Unrolled Loop XOR");
-BENCHMARK_TEMPLATE(BM_cmp_ne, loop_unrolled_xor)->Name("(!=) Unrolled Loop XOR");
-BENCHMARK_TEMPLATE(BM_cmp_eq, simd)->Name("(==) SIMD");
-BENCHMARK_TEMPLATE(BM_cmp_ne, simd)->Name("(!=) SIMD");
+BENCHMARK_TEMPLATE(BM_cmp_eq, simple_loop)->Name("(==) Simple Loop");//->UseManualTime();
+BENCHMARK_TEMPLATE(BM_cmp_ne, simple_loop)->Name("(!=) Simple Loop");//->UseManualTime();
+BENCHMARK_TEMPLATE(BM_cmp_eq, loop_unrolled)->Name("(==) Unrolled Loop");//->UseManualTime();
+BENCHMARK_TEMPLATE(BM_cmp_ne, loop_unrolled)->Name("(!=) Unrolled Loop");//->UseManualTime();
+BENCHMARK_TEMPLATE(BM_cmp_eq, loop_unrolled_xor)->Name("(==) Unrolled Loop XOR");//->UseManualTime();
+BENCHMARK_TEMPLATE(BM_cmp_ne, loop_unrolled_xor)->Name("(!=) Unrolled Loop XOR");//->UseManualTime();
+BENCHMARK_TEMPLATE(BM_cmp_eq, simd)->Name("(==) SIMD");//->UseManualTime();
+BENCHMARK_TEMPLATE(BM_cmp_ne, simd)->Name("(!=) SIMD");//->UseManualTime();

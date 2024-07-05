@@ -17,37 +17,30 @@ namespace LambdaSnail::Uuid
 
     bool uuid::operator==(uuid const& other) const
     {
-        // 3.7 ns / 9.6 ns
-        // for(uint8_t i = 0; i < 16; ++i)
-        // {
-        //     if(m_octets[i] != other.m_octets[i]) return false;
-        // }
-        //
-        // return true;
+#ifdef UUID_LIB_USE_SIMD
+          __m128i const this_id = _mm_load_si128(reinterpret_cast<__m128i const*>(m_octets.data()));
+          __m128i const other_id = _mm_load_si128(reinterpret_cast<__m128i const*>(other.m_octets.data()));
 
-         __m128i const this_id = _mm_load_si128(reinterpret_cast<__m128i const*>(m_octets.data()));
-         __m128i const other_id = _mm_load_si128(reinterpret_cast<__m128i const*>(other.m_octets.data()));
-
-        __m128i const tmp = _mm_cmpeq_epi8( this_id, other_id );
-        return _mm_test_all_ones(tmp);
-
-        // 3.85 ns / 6.28 ns
-        // return m_octets[0] == other.m_octets[0] and
-        // m_octets[1] == other.m_octets[1] and
-        // m_octets[2] == other.m_octets[2] and
-        // m_octets[3] == other.m_octets[3] and
-        // m_octets[4] == other.m_octets[4] and
-        // m_octets[5] == other.m_octets[5] and
-        // m_octets[6] == other.m_octets[6] and
-        // m_octets[7] == other.m_octets[7] and
-        // m_octets[8] == other.m_octets[8] and
-        // m_octets[9] == other.m_octets[9] and
-        // m_octets[10] == other.m_octets[10] and
-        // m_octets[11] == other.m_octets[11] and
-        // m_octets[12] == other.m_octets[12] and
-        // m_octets[13] == other.m_octets[13] and
-        // m_octets[14] == other.m_octets[14] and
-        // m_octets[15] == other.m_octets[15];
+         __m128i const tmp = _mm_cmpeq_epi8( this_id, other_id );
+         return _mm_test_all_ones(tmp);
+#elif
+        return m_octets[0] == other.m_octets[0] and
+        m_octets[1] == other.m_octets[1] and
+        m_octets[2] == other.m_octets[2] and
+        m_octets[3] == other.m_octets[3] and
+        m_octets[4] == other.m_octets[4] and
+        m_octets[5] == other.m_octets[5] and
+        m_octets[6] == other.m_octets[6] and
+        m_octets[7] == other.m_octets[7] and
+        m_octets[8] == other.m_octets[8] and
+        m_octets[9] == other.m_octets[9] and
+        m_octets[10] == other.m_octets[10] and
+        m_octets[11] == other.m_octets[11] and
+        m_octets[12] == other.m_octets[12] and
+        m_octets[13] == other.m_octets[13] and
+        m_octets[14] == other.m_octets[14] and
+        m_octets[15] == other.m_octets[15];
+#endif
     }
 
     bool uuid::operator<(const uuid &) const

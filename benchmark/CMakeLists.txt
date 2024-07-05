@@ -5,7 +5,9 @@ set(CMAKE_CXX_STANDARD 20)
 
 find_package(benchmark REQUIRED)
 
-add_executable(uuid-lib-benchmark uuid_bm.cpp)
+add_executable(uuid-lib-benchmark
+        uuid_bm.cpp
+        uuid_equality_bm.cpp)
 
 set_target_properties(uuid-lib-benchmark PROPERTIES LINKER_LANGUAGE CXX)
 

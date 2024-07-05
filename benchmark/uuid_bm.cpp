@@ -49,23 +49,12 @@ static void BM_create_uuid_v7(benchmark::State& state) {
 
 static void BM_EqualityComparison(benchmark::State& state)
 {
-    auto const test_equal = static_cast<bool>(state.range(0));
-
-    uuid id1, id2;
-    factory::create_uuid_v4(id1);
-    if(test_equal)
-    {
-        id2 = id1;
-    }
-    else
-    {
-        factory::create_uuid_v4(id2);
-    }
-
     for (auto _ : state)
     {
+        uuid id1, id2;
+        factory::create_uuid_v4(id1);
+        factory::create_uuid_v4(id2);
         benchmark::DoNotOptimize( id1 == id2 );
-
     }
 }
 

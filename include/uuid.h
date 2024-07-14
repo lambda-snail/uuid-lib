@@ -30,8 +30,7 @@ namespace LambdaSnail::Uuid
      * The random number generator has been adapted from:
      * @link https://xoroshiro.di.unimi.it/xoroshiro128plusplus.c
      */
-    class uuid {
-    public:
+    struct uuid {
         /**
          * Creates an empty uuid.
          */

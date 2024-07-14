@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(UUID_LIB_BUILD_EXAMPLE 1)
 set(UUID_LIB_BUILD_BENCHMARK 1)
 
-SET(UUID_LIB_USE_SIMDI 1 CACHE BOOL "Enable SIMD instructions if available on the target hardware")
+set(UUID_LIB_USE_SIMDI 1 CACHE BOOL "Enable SIMD instructions if available on the target hardware")
 
 add_subdirectory(test)
 

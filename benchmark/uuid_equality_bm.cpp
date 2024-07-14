@@ -1,4 +1,6 @@
-
+/**
+ * Benchmarks comparing different implementation ideas of the == operator for uuid.
+ */
 #include <immintrin.h>
 #include <uuid.h>
 #include <uuid_factory.h>
@@ -81,12 +83,7 @@ static void BM_cmp_eq(benchmark::State& state) {
 
     for (auto _ : state)
     {
-        // auto start = std::chrono::high_resolution_clock::now();
         benchmark::DoNotOptimize( F(id1, id2) );
-        // auto end = std::chrono::high_resolution_clock::now();
-
-        // auto elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
-        // state.SetIterationTime(elapsed_seconds.count());
     }
 }
 
@@ -98,20 +95,15 @@ static void BM_cmp_ne(benchmark::State& state) {
 
     for (auto _ : state)
     {
-        //auto start = std::chrono::high_resolution_clock::now();
         benchmark::DoNotOptimize( F(id1, id2) );
-        //auto end = std::chrono::high_resolution_clock::now();
-
-        // auto elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
-        // state.SetIterationTime(elapsed_seconds.count());
     }
 }
 
 BENCHMARK_TEMPLATE(BM_cmp_eq, simple_loop)->Name("(==) Simple Loop");//->UseManualTime();
 BENCHMARK_TEMPLATE(BM_cmp_ne, simple_loop)->Name("(!=) Simple Loop");//->UseManualTime();
-BENCHMARK_TEMPLATE(BM_cmp_eq, loop_unrolled)->Name("(==) Unrolled Loop");//->UseManualTime();
-BENCHMARK_TEMPLATE(BM_cmp_ne, loop_unrolled)->Name("(!=) Unrolled Loop");//->UseManualTime();
+BENCHMARK_TEMPLATE(BM_cmp_eq, loop_unrolled)->Name("(==) Unrolled Loop")->Repetitions(100);
+BENCHMARK_TEMPLATE(BM_cmp_ne, loop_unrolled)->Name("(!=) Unrolled Loop")->Repetitions(100);
 BENCHMARK_TEMPLATE(BM_cmp_eq, loop_unrolled_xor)->Name("(==) Unrolled Loop XOR");//->UseManualTime();
 BENCHMARK_TEMPLATE(BM_cmp_ne, loop_unrolled_xor)->Name("(!=) Unrolled Loop XOR");//->UseManualTime();
-BENCHMARK_TEMPLATE(BM_cmp_eq, simd)->Name("(==) SIMD");//->UseManualTime();
-BENCHMARK_TEMPLATE(BM_cmp_ne, simd)->Name("(!=) SIMD");//->UseManualTime();
+BENCHMARK_TEMPLATE(BM_cmp_eq, simd)->Name("(==) SIMD")->Repetitions(100);
+BENCHMARK_TEMPLATE(BM_cmp_ne, simd)->Name("(!=) SIMD")->Repetitions(100);

@@ -84,13 +84,13 @@ static void BM_WIN_uuid_create_sequential(benchmark::State& state) {
 
 
 
-BENCHMARK(BM_create_uuid_v4);
-// BENCHMARK(BM_create_uuid_v7);
+BENCHMARK(BM_create_uuid_v4);//->Repetitions(100);
+BENCHMARK(BM_create_uuid_v7);//->Repetitions(100);
 // BENCHMARK(BM_WIN_cocreate_guid);
 // BENCHMARK(BM_WIN_uuid_create_sequential);
 //
 
-BENCHMARK(BM_EqualityComparison);
+BENCHMARK(BM_EqualityComparison);//->Repetitions(100);
 
 // BENCHMARK(BM_create_batch_dedicated_counter)->Arg(256);
 // BENCHMARK(BM_create_batch_dedicated_counter)->Arg(1024);

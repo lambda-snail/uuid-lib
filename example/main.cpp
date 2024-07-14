@@ -1,4 +1,5 @@
 #include <iostream>
+#include <immintrin.h>
 
 #include "uuid.h"
 #include "uuid_factory.h"

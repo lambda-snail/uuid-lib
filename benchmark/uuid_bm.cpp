@@ -59,6 +59,18 @@ static void BM_EqualityComparison(benchmark::State& state)
     }
 }
 
+static void BM_LessThan(benchmark::State& state)
+{
+    uuid id1, id2;
+    factory::create_uuid_v4(id1);
+    factory::create_uuid_v4(id2);
+
+    for (auto _ : state)
+    {
+        benchmark::DoNotOptimize( id1 < id2 );
+    }
+}
+
 #ifdef WIN32
 
 // Benchmark for comparison with Windows functions
@@ -91,6 +103,7 @@ BENCHMARK(BM_create_uuid_v7);//->Repetitions(100);
 //
 
 BENCHMARK(BM_EqualityComparison);//->Repetitions(100);
+BENCHMARK(BM_LessThan);//->Repetitions(100);
 
 // BENCHMARK(BM_create_batch_dedicated_counter)->Arg(256);
 // BENCHMARK(BM_create_batch_dedicated_counter)->Arg(1024);

@@ -99,11 +99,11 @@ static void BM_cmp_ne(benchmark::State& state) {
     }
 }
 
-BENCHMARK_TEMPLATE(BM_cmp_eq, simple_loop)->Name("(==) Simple Loop");//->UseManualTime();
-BENCHMARK_TEMPLATE(BM_cmp_ne, simple_loop)->Name("(!=) Simple Loop");//->UseManualTime();
-BENCHMARK_TEMPLATE(BM_cmp_eq, loop_unrolled)->Name("(==) Unrolled Loop")->Repetitions(100);
-BENCHMARK_TEMPLATE(BM_cmp_ne, loop_unrolled)->Name("(!=) Unrolled Loop")->Repetitions(100);
-BENCHMARK_TEMPLATE(BM_cmp_eq, loop_unrolled_xor)->Name("(==) Unrolled Loop XOR");//->UseManualTime();
-BENCHMARK_TEMPLATE(BM_cmp_ne, loop_unrolled_xor)->Name("(!=) Unrolled Loop XOR");//->UseManualTime();
-BENCHMARK_TEMPLATE(BM_cmp_eq, simd)->Name("(==) SIMD")->Repetitions(100);
-BENCHMARK_TEMPLATE(BM_cmp_ne, simd)->Name("(!=) SIMD")->Repetitions(100);
+// BENCHMARK_TEMPLATE(BM_cmp_eq, simple_loop)->Name("(==) Simple Loop");//->UseManualTime();
+// BENCHMARK_TEMPLATE(BM_cmp_ne, simple_loop)->Name("(!=) Simple Loop");//->UseManualTime();
+// BENCHMARK_TEMPLATE(BM_cmp_eq, loop_unrolled)->Name("(==) Unrolled Loop")->Repetitions(100);
+// BENCHMARK_TEMPLATE(BM_cmp_ne, loop_unrolled)->Name("(!=) Unrolled Loop")->Repetitions(100);
+// BENCHMARK_TEMPLATE(BM_cmp_eq, loop_unrolled_xor)->Name("(==) Unrolled Loop XOR");//->UseManualTime();
+// BENCHMARK_TEMPLATE(BM_cmp_ne, loop_unrolled_xor)->Name("(!=) Unrolled Loop XOR");//->UseManualTime();
+// BENCHMARK_TEMPLATE(BM_cmp_eq, simd)->Name("(==) SIMD")->Repetitions(100);
+// BENCHMARK_TEMPLATE(BM_cmp_ne, simd)->Name("(!=) SIMD")->Repetitions(100);

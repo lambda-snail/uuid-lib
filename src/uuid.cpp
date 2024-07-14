@@ -43,9 +43,22 @@ namespace LambdaSnail::Uuid
 #endif
     }
 
-    bool uuid::operator<(const uuid &) const
+    bool uuid::operator<(const uuid & other) const
     {
-        return true;
+#ifdef UUID_LIB_USE_SIMD
+        __m128i const this_id = _mm_loadu_si128(reinterpret_cast<__m128i const*>(this->m_octets.data()));
+        __m128i const other_id = _mm_loadu_si128(reinterpret_cast<__m128i const*>(other.m_octets.data()));
+
+        __m128i const max = _mm_cmpeq_epi8(_mm_max_epu8(this_id, other_id), this_id);
+        return not _mm_test_all_ones(max);
+#else
+        for (uint8_t i = 0; i < 16; ++i)
+        {
+            if (a.m_octets[i] < b.m_octets[i]) return true;
+        }
+
+        return false;
+#endif
     }
 
     constexpr uuid::uuid(octet_set_t const &bytes)

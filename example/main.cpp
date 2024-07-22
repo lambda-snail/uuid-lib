@@ -1,9 +1,10 @@
 #include <iostream>
-#include <immintrin.h>
 
 #include "uuid.h"
 #include "uuid_factory.h"
 #include "uuid_spec.h"
+#include "uuid_format.h"
+
 
 /**
  * Example that demonstrates how to work with uuid-lib.
@@ -31,6 +32,11 @@ int main()
     // The uuids can also be braced
     std::cout << uuid1.as_string_braced() << std::endl;
 
+    // And they can be std::format-ed
+    std::cout << std::format("formatted: {}", uuid1) << std::endl;   // Without braces
+    std::cout << std::format("formatted: {:#}", uuid1) << std::endl; // With braces
+    std::cout << std::format("formatted: {:u}", uuid1) << std::endl;   // Upper case
+
     // We can also create uuid v7 with a built-in spec
     uuid v7;
     factory::create_uuid_v7(v7);
@@ -57,5 +63,4 @@ int main()
 
     std::cout << "Equal:     " << (uuids[0] == uuids[1]) << std::endl;
     std::cout << "Less than: " << (uuids[0] < uuids[1]) << std::endl;
-
 ;}

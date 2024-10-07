@@ -3,8 +3,8 @@ project(uuid-lib)
 
 set(CMAKE_CXX_STANDARD 20)
 
-set(UUID_LIB_BUILD_EXAMPLE 1)
-set(UUID_LIB_BUILD_BENCHMARK 1)
+set(UUID_LIB_BUILD_EXAMPLE 1 CACHE BOOL "Build the example project")
+set(UUID_LIB_BUILD_BENCHMARK 1 CACHE BOOL "Build the benchmark project")
 
 set(UUID_LIB_USE_SIMDI 1 CACHE BOOL "Enable SIMD instructions if available on the target hardware")
 

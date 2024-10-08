@@ -11,13 +11,13 @@ xoroshiro128pp::xoroshiro128pp()
     seed_state({ s1, s2 });
 }
 
-auto xoroshiro128pp::seed_state(std::array<uint64_t, 2> const &&state) -> void
+void xoroshiro128pp::seed_state(std::array<uint64_t, 2> const &&state)
 {
     s[0] = state[0];
     s[1] = state[1];
 }
 
-auto xoroshiro128pp::next() -> uint64_t
+uint64_t xoroshiro128pp::next()
 {
     const uint64_t s0 = s[0];
     uint64_t s1 = s[1];
@@ -30,7 +30,12 @@ auto xoroshiro128pp::next() -> uint64_t
     return result;
 }
 
-auto xoroshiro128pp::jump() -> void
+uint64_t xoroshiro128pp::operator()()
+{
+    return next();
+}
+
+void xoroshiro128pp::jump()
 {
     static constexpr std::array<uint64_t, 2> jump = { 0x2bd7a6a6e99c2ddc, 0x0992ccaf6a6fca05 };
 
@@ -51,7 +56,7 @@ auto xoroshiro128pp::jump() -> void
     s[1] = s1;
 }
 
-auto xoroshiro128pp::long_jump() -> void
+void xoroshiro128pp::long_jump()
 {
     static constexpr std::array<uint64_t, 2> long_jump = { 0x360fd5f2cf8d5d99, 0x9c6e6877736c46e3 };
 

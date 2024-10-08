@@ -30,9 +30,7 @@ endif()
 
 set(SRC src)
 add_library(uuid-lib
-    ${SRC}/xoroshiro128.cpp
     ${SRC}/uuid.cpp
-    ${SRC}/uuid_spec.cpp
     ${SRC}/uuid_factory.cpp
 )
 

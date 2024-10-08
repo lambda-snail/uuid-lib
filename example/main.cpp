@@ -1,9 +1,10 @@
 #include <iostream>
+#include <random>
 
 #include "uuid.h"
 #include "uuid_factory.h"
-#include "uuid_spec.h"
 #include "uuid_format.h"
+#include "xoroshiro128.h"
 
 
 /**
@@ -13,9 +14,15 @@ int main()
 {
     using namespace LambdaSnail::Uuid;
 
+    // Instantiate a factory for uuids
+    uuid_factory<std::mt19937_64> factory;
+
+    // The factory can also be configured with a custom random generator - it needs to overload the function call operator
+    //uuid_factory<xoroshiro128pp> factory;
+
     // Create a uuid v4 with the built-in spec
     uuid uuid1;
-    factory::create_uuid_v4(uuid1);
+    factory.create_uuid_v4(uuid1);
 
     // uuid defines two constant UUIDs defined in the standard
     uuid empty = uuid::nil;
@@ -37,9 +44,14 @@ int main()
     std::cout << std::format("formatted: {:#}", uuid1) << std::endl; // With braces
     std::cout << std::format("formatted: {:u}", uuid1) << std::endl;   // Upper case
 
+    // Some basic facts about the uuid structure
+    static_assert(not std::is_trivially_constructible_v<uuid>);
+    static_assert(std::is_trivially_copyable_v<uuid>);
+    static_assert(std::is_trivially_move_constructible_v<uuid>);
+
     // We can also create uuid v7 with a built-in spec
     uuid v7;
-    factory::create_uuid_v7(v7);
+    factory.create_uuid_v7(v7);
 
     std::cout << v7.as_string() << std::endl;
 
@@ -50,14 +62,14 @@ int main()
     // Using this method, up to 4096 uuids can be generated from the same timestamp.
 
     std::vector<uuid> uuids;
-    factory::create_uuids_dedicated_counter(256, uuids);
+    factory.create_uuids_dedicated_counter(256, uuids);
 
     // Another way to solve the problem is to batch generate UUIDs with the monotonic random method.
     // This method sacrfices some of the randomness to allow up to 2^32 sequential uuids to be created
     // with the same time stamp.
 
     uuids.clear();
-    factory::create_uuids_monotonic_random(10000, 4, uuids);
+    factory.create_uuids_monotonic_random(10000, 4, uuids);
 
     // UUIDs can also be compared
 

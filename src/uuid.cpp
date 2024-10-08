@@ -1,7 +1,7 @@
 #include "uuid.h"
-#include "xoroshiro128.h"
 
 #include <immintrin.h>
+#include <uuid_factory.h>
 
 namespace LambdaSnail::Uuid
 {
@@ -12,14 +12,14 @@ namespace LambdaSnail::Uuid
 
     uuid::uuid(uint8_t constant)
     {
-        m_octets.fill(constant);
+        octets.fill(constant);
     }
 
     bool uuid::operator==(uuid const& other) const
     {
 #ifdef UUID_LIB_USE_SIMD
-          __m128i const this_id = _mm_load_si128(reinterpret_cast<__m128i const*>(m_octets.data()));
-          __m128i const other_id = _mm_load_si128(reinterpret_cast<__m128i const*>(other.m_octets.data()));
+          __m128i const this_id = _mm_load_si128(reinterpret_cast<__m128i const*>(octets.data()));
+          __m128i const other_id = _mm_load_si128(reinterpret_cast<__m128i const*>(other.octets.data()));
 
          __m128i const tmp = _mm_cmpeq_epi8( this_id, other_id );
          return _mm_test_all_ones(tmp);
@@ -46,8 +46,8 @@ namespace LambdaSnail::Uuid
     bool uuid::operator<(const uuid & other) const
     {
 #ifdef UUID_LIB_USE_SIMD
-        __m128i const this_id = _mm_loadu_si128(reinterpret_cast<__m128i const*>(this->m_octets.data()));
-        __m128i const other_id = _mm_loadu_si128(reinterpret_cast<__m128i const*>(other.m_octets.data()));
+        __m128i const this_id = _mm_loadu_si128(reinterpret_cast<__m128i const*>(this->octets.data()));
+        __m128i const other_id = _mm_loadu_si128(reinterpret_cast<__m128i const*>(other.octets.data()));
 
         __m128i const max = _mm_cmpeq_epi8(_mm_max_epu8(this_id, other_id), this_id);
         return not _mm_test_all_ones(max);
@@ -63,18 +63,18 @@ namespace LambdaSnail::Uuid
 
     constexpr uuid::uuid(octet_set_t const &bytes)
     {
-        m_octets = bytes;
+        octets = bytes;
     }
 
     std::string uuid::as_string() const
     {
         return std::format(
             "{:02x}{:02x}{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}",
-            m_octets[0], m_octets[1], m_octets[2], m_octets[3],
-            m_octets[4], m_octets[5],
-            m_octets[6], m_octets[7],
-            m_octets[8], m_octets[9],
-            m_octets[10], m_octets[11], m_octets[12], m_octets[13], m_octets[14], m_octets[15]
+            octets[0], octets[1], octets[2], octets[3],
+            octets[4], octets[5],
+            octets[6], octets[7],
+            octets[8], octets[9],
+            octets[10], octets[11], octets[12], octets[13], octets[14], octets[15]
         );
     }
 
@@ -82,11 +82,11 @@ namespace LambdaSnail::Uuid
     {
         return std::format(
             "{{{:02x}{:02x}{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}}}",
-            m_octets[0], m_octets[1], m_octets[2], m_octets[3],
-            m_octets[4], m_octets[5],
-            m_octets[6], m_octets[7],
-            m_octets[8], m_octets[9],
-            m_octets[10], m_octets[11], m_octets[12], m_octets[13], m_octets[14], m_octets[15]
+            octets[0], octets[1], octets[2], octets[3],
+            octets[4], octets[5],
+            octets[6], octets[7],
+            octets[8], octets[9],
+            octets[10], octets[11], octets[12], octets[13], octets[14], octets[15]
         );
     }
 };

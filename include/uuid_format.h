@@ -48,14 +48,14 @@ struct std::formatter<LambdaSnail::Uuid::uuid> {
 
         ios::fmtflags const flags(out.flags());
 
-        for (int i = 0; i < id.m_octets.size(); ++i)
+        for (int i = 0; i < id.octets.size(); ++i)
         {
             if(m_IsUpperCase)
             {
                 out << std::uppercase;
             }
 
-            out << std::setw(2) << std::setfill('0') << std::hex << static_cast<int32_t>(id.m_octets[i]);
+            out << std::setw(2) << std::setfill('0') << std::hex << static_cast<int32_t>(id.octets[i]);
 
             if (i == 3 or i == 5 or i == 7 or i == 9)
             {

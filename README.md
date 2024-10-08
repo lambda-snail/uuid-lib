@@ -58,12 +58,26 @@ Prior to c++20 it was not required for `system_clock` to be based on Unix Time.
 
 # Usage
 
+## Factory
+
+To begin we first need to construct an instance of the ```uuid_factory```. This can be constructed with a random generator from the
+standard library, or a custom implementation:
+
+```c++
+uuid_factory<std::mt19937_64> factory;
+```
+
+A custom implementation must be default-constructible and provide an overload for `operator()` that fetches the next random number,
+which is assumed to be a 64-bit unsigned integer.
+
 ## Single UUID Creation
 
 To create a `uuid` we can call the ctor and specify a version spec. This library includes pre-defined specs for version 4 and 7
 that can be plugged in:
 
 ```c++
+uuid_factory<std::mt19937_64> factory;
+
 uuid v4;
 factory::create_uuid_v4(v4);
 uuid v7;
@@ -73,11 +87,12 @@ factory::create_uuid_v7(v7);
 This enables re-use of a single variable if you need more than one `uuid` within the same scope, but don't wish to "pollute" the stack:
 
 ```c++
+uuid_factory<std::mt19937_64> factory;
+
 uuid id;
-factory::create_uuid_v4(id);
+factory.create_uuid_v4(id);
 ...
-factory::create_uuid_v7(id);
-...
+factory.create_uuid_v7(id);
 ```
 
 There are also constants for the `nil` or _empty_ uuid, and the `max`:
@@ -102,7 +117,7 @@ If you need a small number of uuids (up to 4096), the dedicated counter function
 
 ```c++
 std::vector<uuid> uuids;
-factory::create_uuids_dedicated_counter(256, uuids);
+factory.create_uuids_dedicated_counter(256, uuids);
 ```
 
 This creates 256 uuids based on the same time stamp and random data, which makes it more efficient per `uuid` compared 
@@ -116,7 +131,7 @@ If you need more than 4096 `uuid`s then there is also the monotonic random metho
 
 ```c++
 std::vector<uuid> uuids;
-factory::create_uuids_monotonic_random(100000, 4, uuids);
+factory.create_uuids_monotonic_random(100000, 4, uuids);
 ```
 
 This will fill the vector with 100,000 `uuid`s separated by an increment of 4. These will use the same time stamp, and only
@@ -129,9 +144,15 @@ to the previous `uuid`.
 The following code snippets come from main.cpp in the examples folder.
 
 ```c++
+// Instantiate a factory for uuids
+uuid_factory<std::mt19937_64> factory;
+
+// The factory can also be configured with a custom random generator - it needs to overload the function call operator
+//uuid_factory<xoroshiro128pp> factory;
+
 // Create a uuid v4 with the built-in spec
 uuid uuid1;
-factory::create_uuid_v4(uuid1);
+factory.create_uuid_v4(uuid1);
 
 // uuid defines two constant UUIDs defined in the standard
 uuid empty = uuid::nil;
@@ -153,9 +174,14 @@ std::cout << std::format("formatted: {}", uuid1) << std::endl;   // Without brac
 std::cout << std::format("formatted: {:#}", uuid1) << std::endl; // With braces
 std::cout << std::format("formatted: {:u}", uuid1) << std::endl;   // Upper case
 
+// Some basic facts about the uuid structure
+static_assert(not std::is_trivially_constructible_v<uuid>);
+static_assert(std::is_trivially_copyable_v<uuid>);
+static_assert(std::is_trivially_move_constructible_v<uuid>);
+
 // We can also create uuid v7 with a built-in spec
 uuid v7;
-factory::create_uuid_v7(v7);
+factory.create_uuid_v7(v7);
 
 std::cout << v7.as_string() << std::endl;
 
@@ -166,14 +192,14 @@ std::cout << v7.as_string() << std::endl;
 // Using this method, up to 4096 uuids can be generated from the same timestamp.
 
 std::vector<uuid> uuids;
-factory::create_uuids_dedicated_counter(256, uuids);
+factory.create_uuids_dedicated_counter(256, uuids);
 
 // Another way to solve the problem is to batch generate UUIDs with the monotonic random method.
 // This method sacrfices some of the randomness to allow up to 2^32 sequential uuids to be created
 // with the same time stamp.
 
 uuids.clear();
-factory::create_uuids_monotonic_random(10000, 4, uuids);
+factory.create_uuids_monotonic_random(10000, 4, uuids);
 
 // UUIDs can also be compared
 

@@ -39,14 +39,15 @@ public:
 
 	void seed_state(std::array<uint64_t, 2> const&& state);
 
-	auto next() -> uint64_t;
+	uint64_t next();
+	uint64_t operator()();
 
 	/*
 	 * This is the jump function for the generator. It is equivalent
 	 * to 2^64 calls to next(); it can be used to generate 2^64
 	 * non-overlapping subsequences for parallel computations.
 	 */
-	auto jump() -> void;
+	void jump();
 
 	/*
 	 * This is the long-jump function for the generator. It is equivalent to
@@ -54,7 +55,7 @@ public:
 	 * from each of which jump() will generate 2^32 non-overlapping
 	 * subsequences for parallel distributed computations.
 	 */
-	auto long_jump() -> void;
+	void long_jump();
 
 private:
 

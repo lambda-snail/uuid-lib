@@ -26,7 +26,7 @@ bool uuid_lt_reference(uuid const &a, uuid const &b)
 {
     for (uint8_t i = 0; i < 16; ++i)
     {
-        if (a.m_octets[i] < b.m_octets[i]) return true;
+        if (a.octets[i] < b.octets[i]) return true;
     }
 
     return false;

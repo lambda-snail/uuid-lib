@@ -5,17 +5,9 @@
 #include <format>
 #include <string>
 #include <string>
-#include <uuid_types.h>
-
-#include "xoroshiro128.h"
 
 namespace LambdaSnail::Uuid
 {
-    /**
-     * The default generator used by the UUID implementation.
-     */
-    static inline xoroshiro128pp g_default_generator;
-
     /**
      * The UUID class really only holds octet data. Different versions of UUID are constructed using the provided factory functions.
      * The "raw" octet data is exposed to the user, so it should be relatively straightforward to implement a new UUID version. Thus,
@@ -30,7 +22,10 @@ namespace LambdaSnail::Uuid
      * The random number generator has been adapted from:
      * @link https://xoroshiro.di.unimi.it/xoroshiro128plusplus.c
      */
-    struct uuid {
+    struct uuid
+    {
+        typedef std::array<uint8_t, 16> octet_set_t;
+
         /**
          * Creates an empty uuid.
          */
@@ -42,7 +37,7 @@ namespace LambdaSnail::Uuid
          * This can be useful in certain scenarios where the UUID has already been created, possibly by an external source,
          * such as deserialization.
          */
-        explicit constexpr uuid(octet_set_t const &bytes);
+        explicit constexpr uuid(octet_set_t const& bytes);
 
         /**
          * Creates a UUID where all octets are filled with the same value.
@@ -51,8 +46,8 @@ namespace LambdaSnail::Uuid
          */
         explicit uuid(uint8_t constant);
 
-        bool operator==(const uuid &) const;
-        bool operator<(const uuid &) const;
+        bool operator==(const uuid&) const;
+        bool operator<(const uuid&) const;
 
         /**
          * Returns a string representation of the UUID.
@@ -78,6 +73,6 @@ namespace LambdaSnail::Uuid
         static const uuid max;
 
         alignas(16)
-        octet_set_t m_octets{};
+        octet_set_t octets{};
     };
 }

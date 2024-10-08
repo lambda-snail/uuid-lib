@@ -72,8 +72,8 @@ which is assumed to be a 64-bit unsigned integer.
 
 ## Single UUID Creation
 
-To create a `uuid` we can call the ctor and specify a version spec. This library includes pre-defined specs for version 4 and 7
-that can be plugged in:
+To create a `uuid` using the factory, we call one of the provided public member functions. The most basic ones create a one-off
+uuid of either version 4 or 7:
 
 ```c++
 uuid_factory<std::mt19937_64> factory;
@@ -84,7 +84,7 @@ uuid v7;
 factory::create_uuid_v7(v7);
 ```
 
-This enables re-use of a single variable if you need more than one `uuid` within the same scope, but don't wish to "pollute" the stack:
+The api enables re-use of a single variable if you need more than one `uuid` within the same scope, but don't wish to "pollute" the stack:
 
 ```c++
 uuid_factory<std::mt19937_64> factory;
@@ -102,10 +102,10 @@ auto max = uuid::max;
 auto empty = uuid::nil;
 ```
 
-If you have obtained the octets for a UUID from somewhere else (e.g., (de-)serialized from some stream), a `uuid` can also be created with the raw data:
+If you have obtained the octets for a UUID from somewhere else (e.g., deserialized from some stream), a `uuid` can also be created with the raw data:
 
 ```c++
-octet_set_t raw_data = get_data();
+uuid::octet_set_t raw_data = get_data();
 auto raw_uuid = uuid(raw_data);
 ```
 
@@ -150,7 +150,7 @@ uuid_factory<std::mt19937_64> factory;
 // The factory can also be configured with a custom random generator - it needs to overload the function call operator
 //uuid_factory<xoroshiro128pp> factory;
 
-// Create a uuid v4 with the built-in spec
+// Create a uuid v4 
 uuid uuid1;
 factory.create_uuid_v4(uuid1);
 
@@ -179,7 +179,7 @@ static_assert(not std::is_trivially_constructible_v<uuid>);
 static_assert(std::is_trivially_copyable_v<uuid>);
 static_assert(std::is_trivially_move_constructible_v<uuid>);
 
-// We can also create uuid v7 with a built-in spec
+// We can also create uuid v7
 uuid v7;
 factory.create_uuid_v7(v7);
 
@@ -211,6 +211,7 @@ std::cout << "Less than: " << (uuids[0] < uuids[1]) << std::endl;
 
 - [ ] Random increment for the monotonic counter factory function
 - [ ] Add tests
+- [x] Clean up the api
 - [x] Remove the spec classes exposed to the user and switch to factory functions only for a more consistent API
 - [x] Add benchmarks
 - [x] Remove the main file so that the code can be included as a library
@@ -222,6 +223,6 @@ The RFC that defines UUID (published May 2024).
 
 - [rfc9562](https://datatracker.ietf.org/doc/html/rfc9562#name-requirements-language)
 
-The random number generator in this project comes fom the following link. All credits go to the original author, I 
+The random number generator in the examples project comes fom the following link. All credits go to the original author, I 
 have simply adapted it to fit my style.
 - [xoroshiro128plusplus](https://xoroshiro.di.unimi.it/xoroshiro128plusplus.c)

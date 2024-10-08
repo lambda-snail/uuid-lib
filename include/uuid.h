@@ -13,14 +13,9 @@ namespace LambdaSnail::Uuid
      * The "raw" octet data is exposed to the user, so it should be relatively straightforward to implement a new UUID version. Thus,
      * this library puts a lot of responsibility on the user, should (s)he wish to make changes to a uuid or create their own.
      *
-     * The library allows users to provide their own random number generator, but it also comes with an adapted version of a generator called `xoroshiro128pp`.
-     * This generator is seeded with the system time by default when the application starts. A user-provided generator must support the
-     * a member function called `next()` that returns a `uint64_t`.
+     * The library allows users to use built-in random generators, or provide their own if they wish.
      *
      * @link https://datatracker.ietf.org/doc/html/rfc9562#name-requirements-language
-     *
-     * The random number generator has been adapted from:
-     * @link https://xoroshiro.di.unimi.it/xoroshiro128plusplus.c
      */
     struct uuid
     {

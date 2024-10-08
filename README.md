@@ -79,9 +79,9 @@ uuid of either version 4 or 7:
 uuid_factory<std::mt19937_64> factory;
 
 uuid v4;
-factory::create_uuid_v4(v4);
+factory.create_uuid_v4(v4);
 uuid v7;
-factory::create_uuid_v7(v7);
+factory.create_uuid_v7(v7);
 ```
 
 The api enables re-use of a single variable if you need more than one `uuid` within the same scope, but don't wish to "pollute" the stack:

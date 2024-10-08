@@ -1,4 +1,4 @@
-#include "xoroshiro128.h"
+#include "xoroshiro128.hpp"
 
 #include <chrono>
 

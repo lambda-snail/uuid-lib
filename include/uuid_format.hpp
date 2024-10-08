@@ -5,7 +5,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "uuid.h"
+#include "uuid.hpp"
 
 template<>
 struct std::formatter<LambdaSnail::Uuid::uuid> {

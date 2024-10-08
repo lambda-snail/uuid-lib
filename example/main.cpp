@@ -1,11 +1,10 @@
 #include <iostream>
 #include <random>
 
-#include "uuid.h"
-#include "uuid_factory.h"
-#include "uuid_format.h"
-#include "xoroshiro128.h"
-
+#include "uuid.hpp"
+#include "uuid_factory.hpp"
+#include "uuid_format.hpp"
+#include "xoroshiro128.hpp"
 
 /**
  * Example that demonstrates how to work with uuid-lib.

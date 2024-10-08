@@ -31,7 +31,6 @@ endif()
 set(SRC src)
 add_library(uuid-lib
     ${SRC}/uuid.cpp
-    ${SRC}/uuid_factory.cpp
 )
 
 add_library(LambdaSnail::uuid-lib ALIAS uuid-lib)

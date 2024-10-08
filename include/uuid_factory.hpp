@@ -4,7 +4,7 @@
 #include <vector>
 #include <chrono>
 
-#include "uuid.h"
+#include "uuid.hpp"
 
 namespace LambdaSnail::Uuid
 {

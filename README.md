@@ -58,6 +58,9 @@ Prior to c++20 it was not required for `system_clock` to be based on Unix Time.
 
 # Usage
 
+To start, you can either include `uuid_all.hpp` which pulls in all header files, or include `uuid.hpp` only if you don't 
+need the facilities declared in the other headers.
+
 ## Factory
 
 To begin we first need to construct an instance of the ```uuid_factory```. This can be constructed with a random generator from the

@@ -1,7 +1,7 @@
-#include "uuid.h"
+#include "uuid.hpp"
 
 #include <immintrin.h>
-#include <uuid_factory.h>
+#include <uuid_factory.hpp>
 
 namespace LambdaSnail::Uuid
 {

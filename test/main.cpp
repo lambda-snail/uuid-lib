@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-// #include "uuid.h"
-// #include <uuid_factory.h>
+// #include "uuid.hpp"
+// #include <uuid_factory.hpp>
 //
 // using namespace LambdaSnail::Uuid;
 //

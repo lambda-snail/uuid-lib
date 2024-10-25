@@ -49,8 +49,8 @@ namespace LambdaSnail::Uuid
         __m128i const this_id = _mm_loadu_si128(reinterpret_cast<__m128i const*>(this->octets.data()));
         __m128i const other_id = _mm_loadu_si128(reinterpret_cast<__m128i const*>(other.octets.data()));
 
-        __m128i const max = _mm_cmpeq_epi8(_mm_max_epu8(this_id, other_id), this_id);
-        return not _mm_test_all_ones(max);
+        __m128i const cmp_max = _mm_cmpeq_epi8(_mm_max_epu8(this_id, other_id), this_id);
+        return not _mm_test_all_ones(cmp_max);
 #else
         for (uint8_t i = 0; i < 16; ++i)
         {

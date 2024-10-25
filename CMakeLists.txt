@@ -28,11 +28,7 @@ endif()
     add_subdirectory(benchmark)
 #endif ()
 
-set(SRC src)
-add_library(uuid-lib
-    ${SRC}/uuid.cpp
-)
-
+add_library(uuid-lib INTERFACE)
 add_library(LambdaSnail::uuid-lib ALIAS uuid-lib)
 
-target_include_directories(uuid-lib PUBLIC include)
+target_include_directories(uuid-lib INTERFACE include)

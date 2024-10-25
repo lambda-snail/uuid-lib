@@ -169,8 +169,8 @@ std::cout << uuid1.as_string() << std::endl;
 std::cout << empty.as_string() << std::endl;
 std::cout << max.as_string() << std::endl;
 
-// The uuids can also be braced
-std::cout << uuid1.as_string_braced() << std::endl;
+// The uuid strings can also have different formats
+std::cout << uuid1.as_string<string_conversion_mode::curly_braces>() << std::endl;
 
 // And they can be std::format-ed
 std::cout << std::format("formatted: {}", uuid1) << std::endl;   // Without braces

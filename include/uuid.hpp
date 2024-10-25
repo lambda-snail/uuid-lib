@@ -13,6 +13,17 @@
 namespace LambdaSnail::Uuid
 {
     /**
+     * Some systems generate or expect UUIDs that are enclosed in braces or have other syntactical quirks. This
+     * mode tries to facilitate interop with such systems when outputting a uuid as a string.
+     */
+    enum class string_conversion_mode
+    {
+        standard,
+        curly_braces,
+        no_dash
+    };
+
+    /**
      * The UUID class really only holds octet data. Different versions of UUID are constructed using the provided factory functions.
      * The "raw" octet data is exposed to the user, so it should be relatively straightforward to implement a new UUID version. Thus,
      * this library puts a lot of responsibility on the user, should (s)he wish to make changes to a uuid or create their own.
@@ -51,15 +62,8 @@ namespace LambdaSnail::Uuid
         /**
          * Returns a string representation of the UUID.
          */
+        template<string_conversion_mode M = string_conversion_mode::standard>
         [[nodiscard]] std::string as_string() const;
-
-        /**
-         * Some systems generate or expect UUIDs that are enclosed in braces. This function tries to
-         * facilitate interop with such systems.
-         *
-         * Returns a string with the same format as as_string, enclosed in braces: "{uuid}"
-         */
-        [[nodiscard]] std::string as_string_braced() const;
 
         /**
          * The empty or nil UUID, with all octets set to 0.
@@ -85,7 +89,7 @@ namespace LambdaSnail::Uuid
         octets.fill(constant);
     }
 
-    bool uuid::operator==(uuid const& other) const
+    inline bool uuid::operator==(uuid const& other) const
     {
 #ifdef UUID_LIB_USE_SIMD
         __m128i const this_id = _mm_load_si128(reinterpret_cast<__m128i const*>(octets.data()));
@@ -113,7 +117,7 @@ namespace LambdaSnail::Uuid
 #endif
     }
 
-    bool uuid::operator<(const uuid & other) const
+    inline bool uuid::operator<(const uuid& other) const
     {
 #ifdef UUID_LIB_USE_SIMD
         __m128i const this_id = _mm_loadu_si128(reinterpret_cast<__m128i const*>(this->octets.data()));
@@ -131,27 +135,29 @@ namespace LambdaSnail::Uuid
 #endif
     }
 
-    constexpr uuid::uuid(octet_set_t const &bytes)
+    constexpr uuid::uuid(octet_set_t const& bytes)
     {
         octets = bytes;
     }
 
-    std::string uuid::as_string() const
+    template<string_conversion_mode Mode>
+    inline std::string uuid::as_string() const
     {
-        return std::format(
-                "{:02x}{:02x}{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}",
-                octets[0], octets[1], octets[2], octets[3],
-                octets[4], octets[5],
-                octets[6], octets[7],
-                octets[8], octets[9],
-                octets[10], octets[11], octets[12], octets[13], octets[14], octets[15]
-        );
-    }
+        auto format_resolver = [](string_conversion_mode m) consteval
+        {
+            switch(m)
+            {
+                case string_conversion_mode::curly_braces:
+                    return "{{{:02x}{:02x}{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}}}";
+                case string_conversion_mode::no_dash:
+                    return "{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}";
+                case string_conversion_mode::standard:
+                    return "{:02x}{:02x}{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}";
+            }
+        };
 
-    std::string uuid::as_string_braced() const
-    {
         return std::format(
-                "{{{:02x}{:02x}{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}-{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}}}",
+                format_resolver(Mode),
                 octets[0], octets[1], octets[2], octets[3],
                 octets[4], octets[5],
                 octets[6], octets[7],

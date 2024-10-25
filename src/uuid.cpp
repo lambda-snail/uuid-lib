@@ -7,7 +7,7 @@ namespace LambdaSnail::Uuid
     uuid const uuid::nil = uuid( 0x00 );
     uuid const uuid::max = uuid( 0xFF );
 
-    uuid::uuid() : uuid( 0x00 ) {};
+    uuid::uuid() : uuid( 0x00 ) {}
 
     uuid::uuid(uint8_t constant)
     {
@@ -88,4 +88,4 @@ namespace LambdaSnail::Uuid
             octets[10], octets[11], octets[12], octets[13], octets[14], octets[15]
         );
     }
-};
+}
